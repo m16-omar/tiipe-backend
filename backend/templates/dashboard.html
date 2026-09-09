@@ -4,45 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIIPE & NOVATRIX — Unified Multi-Tenant Admin Dashboard</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         :root {
-            --bg-base: #090D16;
-            --bg-card: #121A2B;
-            --bg-card-hover: #1C2841;
-            --bg-sidebar: #0B101D;
+            --bg-base: #060911;
+            --bg-surface: #0c121e;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-card-hover: rgba(24, 35, 60, 0.85);
+            --bg-input: #090e18;
             --border-color: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(37, 99, 235, 0.35);
+            --border-focus: rgba(37, 99, 235, 0.5);
             
-            /* Brand Colors - TIIPE */
-            --tiipe-navy: #1E3A8A;
-            --tiipe-gold: #D97706;
-            --tiipe-gold-light: #F59E0B;
+            --tiipe-gold: #d97706;
+            --tiipe-gold-bg: rgba(217, 119, 6, 0.15);
+            --tiipe-navy: #1e3a8a;
             --tiipe-emerald: #059669;
-            
-            /* Brand Colors - Novatrix */
-            --novatrix-blue: #2563EB;
-            --novatrix-cyan: #0284C7;
-            --novatrix-slate: #163A5F;
-            
-            /* UI Palette */
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
-            --text-dim: #64748B;
-            --tag-red: #EF4444;
-            --tag-orange: #F97316;
-            --tag-green: #10B981;
-            --tag-blue: #3B82F6;
-            --tag-purple: #8B5CF6;
+
+            --novatrix-blue: #2563eb;
+            --novatrix-cyan: #0284c7;
+            --novatrix-slate: #163a5f;
+            --novatrix-blue-bg: rgba(37, 99, 235, 0.15);
+
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
@@ -53,304 +57,156 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(30, 58, 138, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 90% 15%, rgba(37, 99, 235, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 50% 90%, rgba(217, 119, 6, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #090D16;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
-
-        /* Layout Grid */
-        .app-layout {
-            display: grid;
-            grid-template-columns: 260px 1fr;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        aside {
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
+        /* ------------------------------------------------------------- */
+        /* TOP BAR                                                       */
+        /* ------------------------------------------------------------- */
+        .topbar {
+            height: 68px;
+            background: rgba(12, 18, 30, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
-            flex-direction: column;
-            padding: 1.25rem 1rem;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
             position: sticky;
             top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            z-index: 40;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .brand-header {
             display: flex;
             align-items: center;
-            gap: 0.85rem;
-            padding: 0.5rem 0.5rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1.25rem;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #fff;
         }
 
-        .brand-icon-wrapper {
-            width: 40px;
-            height: 40px;
+        .brand-icon-wrap {
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
-            background: linear-gradient(135deg, #1E3A8A, #2563EB);
+            background: linear-gradient(135deg, var(--tiipe-gold), var(--novatrix-blue));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             color: #fff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
 
-        .brand-title-group h2 {
+        .brand-title-group h1 {
             font-family: 'Outfit', sans-serif;
             font-size: 1.05rem;
             font-weight: 700;
             letter-spacing: -0.01em;
-            color: #fff;
-            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
+
         .brand-title-group p {
             font-size: 0.72rem;
             color: var(--text-dim);
             letter-spacing: 0.02em;
         }
 
-        /* Active Tenant Banner in Sidebar */
-        .tenant-status-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 0.75rem;
-            margin-bottom: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: all 0.2s ease;
-        }
-        .tenant-status-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            background: rgba(217, 119, 6, 0.15);
-            color: var(--tiipe-gold-light);
-        }
-        .tenant-status-info h4 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #fff;
-        }
-        .tenant-status-info .schema-pill {
-            display: inline-block;
-            font-size: 0.65rem;
-            color: #10B981;
-            font-family: monospace;
-            background: rgba(16, 185, 129, 0.1);
-            padding: 0.1rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        /* Navigation Links */
-        .nav-section-title {
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            font-weight: 700;
-            margin: 0.75rem 0.5rem 0.5rem;
-        }
-
-        .nav-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .nav-item a {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.65rem 0.75rem;
-            border-radius: 8px;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .nav-item a:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
-        .nav-item.active a {
-            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), rgba(37, 99, 235, 0.05));
-            border-left: 3px solid var(--novatrix-blue);
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .nav-link-content {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .nav-item i {
-            font-size: 0.95rem;
-            width: 18px;
-            text-align: center;
-            color: var(--text-dim);
-        }
-
-        .nav-item.active i {
-            color: #60A5FA;
-        }
-
-        .nav-badge {
-            font-size: 0.7rem;
-            padding: 0.15rem 0.45rem;
-            border-radius: 9999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .nav-badge.gold {
-            background: rgba(217, 119, 6, 0.2);
-            color: #FBBF24;
-        }
-        .nav-badge.blue {
-            background: rgba(37, 99, 235, 0.2);
-            color: #93C5FD;
-        }
-
-        /* Main Content Column */
-        main {
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-base);
-            min-height: 100vh;
-            overflow-y: auto;
-        }
-
-        /* Top Bar Header */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 30;
-            background: rgba(9, 13, 22, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.85rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-        }
-
-        .top-left-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-        }
-
-        /* Tenant Selector Dropdown */
-        .tenant-selector {
+        /* Tenant Switcher in Top Bar */
+        .tenant-switcher-dropdown {
             position: relative;
         }
 
-        .tenant-btn {
-            background: #121A2B;
+        .tenant-switch-btn {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
             color: #fff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            font-size: 0.875rem;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .tenant-btn:hover {
-            border-color: var(--novatrix-blue);
-            background: #1C2841;
+
+        .tenant-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.09);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .tenant-dropdown-menu {
+        .tenant-menu-list {
             position: absolute;
-            top: calc(100% + 6px);
+            top: calc(100% + 8px);
             left: 0;
             width: 280px;
             background: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
             padding: 0.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             display: none;
             flex-direction: column;
             gap: 0.25rem;
-            z-index: 50;
+            z-index: 200;
         }
-        .tenant-dropdown-menu.show {
+
+        .tenant-menu-list.show {
             display: flex;
         }
 
-        .tenant-option {
+        .tenant-menu-item {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             padding: 0.6rem 0.75rem;
             border-radius: 6px;
-            color: var(--text-muted);
-            text-decoration: none;
             font-size: 0.85rem;
+            color: var(--text-muted);
             cursor: pointer;
             transition: all 0.15s ease;
-        }
-        .tenant-option:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-        }
-        .tenant-option.active {
-            background: rgba(37, 99, 235, 0.2);
-            color: #fff;
-            font-weight: 600;
+            text-decoration: none;
         }
 
-        /* Global Search Bar */
-        .search-bar-wrapper {
+        .tenant-menu-item:hover, .tenant-menu-item.active {
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+        }
+
+        .tenant-menu-item.active {
+            border-left: 3px solid var(--novatrix-blue);
+        }
+
+        .topbar-center {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 1.5rem;
             position: relative;
-            max-width: 420px;
+        }
+
+        .search-input-wrap {
+            position: relative;
             width: 100%;
         }
 
-        .search-bar-wrapper i {
+        .search-input-wrap i {
             position: absolute;
-            left: 1rem;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-dim);
@@ -359,84 +215,80 @@
 
         .search-input {
             width: 100%;
-            background: #121A2B;
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 0.55rem 1rem 0.55rem 2.5rem;
+            padding: 0.45rem 1rem 0.45rem 2.25rem;
             font-size: 0.85rem;
             color: #fff;
             outline: none;
-            transition: all 0.2s ease;
+            transition: border-color 0.2s ease;
         }
+
         .search-input:focus {
             border-color: var(--novatrix-blue);
-            background: #182238;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
 
-        .search-shortcut {
-            position: absolute;
-            right: 0.75rem;
-            top: 50%;
-            transform: translateY(-50%);
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .schema-badge {
             font-size: 0.7rem;
-            color: var(--text-dim);
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        /* Top Right Actions */
-        .top-right-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .schema-badge-pill {
-            font-size: 0.75rem;
-            color: #34D399;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 0.35rem 0.75rem;
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
             font-family: monospace;
-            font-weight: 500;
+            padding: 0.3rem 0.6rem;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
         }
-        .schema-badge-pill .dot {
+
+        .schema-badge-dot {
             width: 6px;
             height: 6px;
-            background: #10B981;
+            background: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 8px #10B981;
+            box-shadow: 0 0 6px #10b981;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
+            gap: 0.45rem;
+            padding: 0.45rem 0.9rem;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.825rem;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.2s ease;
             border: 1px solid transparent;
+            transition: all 0.2s ease;
         }
+
         .btn-primary {
-            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            background: linear-gradient(135deg, var(--novatrix-blue), #1d4ed8);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
         }
         .btn-primary:hover {
-            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--tiipe-gold), #b45309);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+        }
+        .btn-gold:hover {
             transform: translateY(-1px);
         }
+
         .btn-outline {
             background: rgba(255, 255, 255, 0.04);
             border-color: var(--border-color);
@@ -445,284 +297,320 @@
         .btn-outline:hover {
             background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-        .btn-tiipe {
-            background: linear-gradient(135deg, #D97706, #B45309);
-            color: #fff;
-        }
-        .btn-tiipe:hover {
-            background: linear-gradient(135deg, #F59E0B, #D97706);
         }
 
-        .user-profile-widget {
+        .user-profile-badge {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
-            padding-left: 0.75rem;
-            border-left: 1px solid var(--border-color);
+            gap: 0.6rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: #fff;
         }
-        .user-avatar {
-            width: 36px;
-            height: 36px;
+
+        .avatar-circle {
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #D97706, #2563EB);
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            color: #fff;
-            border: 2px solid rgba(255, 255, 255, 0.15);
         }
-        .user-meta {
-            line-height: 1.2;
+
+        /* ------------------------------------------------------------- */
+        /* MAIN LAYOUT (SIDEBAR + CONTENT)                               */
+        /* ------------------------------------------------------------- */
+        .layout-container {
+            display: flex;
+            flex: 1;
         }
-        .user-name {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #fff;
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(10, 15, 25, 0.95);
+            border-right: 1px solid var(--border-color);
+            padding: 1.25rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .user-role {
+
+        .sidebar-brand-card {
+            padding: 0.85rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .sidebar-brand-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .sidebar-brand-logo.tiipe {
+            background: var(--tiipe-gold-bg);
+            color: #fbbf24;
+            border: 1px solid rgba(217, 119, 6, 0.4);
+        }
+
+        .sidebar-brand-logo.novatrix {
+            background: var(--novatrix-blue-bg);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+        }
+
+        .sidebar-brand-logo.master {
+            background: rgba(139, 92, 246, 0.15);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .menu-header {
             font-size: 0.68rem;
-            color: var(--tiipe-gold-light);
             text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-dim);
+            padding: 0.5rem 0.75rem 0.2rem;
+            font-weight: 700;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+
+        .menu-item i {
+            font-size: 0.95rem;
+            width: 18px;
+            text-align: center;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .menu-item.active {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.05) 100%);
+            color: #60a5fa;
+            border-left: 3px solid var(--novatrix-blue);
             font-weight: 600;
         }
 
-        /* Main Dashboard Content Area */
-        .content-container {
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            max-width: 1440px;
+        .menu-item.active.tiipe-active {
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.2) 0%, rgba(217, 119, 6, 0.05) 100%);
+            color: #fbbf24;
+            border-left: 3px solid var(--tiipe-gold);
+        }
+
+        .sidebar-footer {
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Main Content View */
+        .content-area {
+            flex: 1;
+            padding: 1.75rem 2rem;
+            overflow-y: auto;
+            max-width: 1550px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Section Title Row */
-        .section-header-row {
+        .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 0.5rem;
+            align-items: flex-start;
+            margin-bottom: 1.75rem;
         }
-        .section-heading h2 {
+
+        .page-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.65rem;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 0.2rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 0.25rem;
         }
-        .section-heading p {
-            font-size: 0.85rem;
+
+        .page-subtitle {
+            font-size: 0.875rem;
             color: var(--text-muted);
         }
 
-        /* KPI Stat Cards Grid (5 columns) */
+        /* ------------------------------------------------------------- */
+        /* KPI STATS CARDS                                               */
+        /* ------------------------------------------------------------- */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 1.25rem;
+            gap: 1.1rem;
+            margin-bottom: 1.75rem;
         }
-        @media (max-width: 1200px) {
-            .kpi-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+
+        @media (max-width: 1300px) {
+            .kpi-grid { grid-template-columns: repeat(3, 1fr); }
         }
-        @media (max-width: 768px) {
-            .kpi-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 900px) {
+            .kpi-grid { grid-template-columns: 1fr; }
         }
 
         .kpi-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.25s ease;
+            padding: 1.15rem 1.25rem;
             position: relative;
-            overflow: hidden;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(12px);
         }
+
         .kpi-card:hover {
-            border-color: var(--border-glow);
-            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.18);
             transform: translateY(-2px);
+            background: var(--bg-card-hover);
         }
 
         .kpi-top {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            align-items: center;
+            margin-bottom: 0.6rem;
         }
-        .kpi-label {
-            font-size: 0.75rem;
+
+        .kpi-title {
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            color: var(--text-muted);
-            font-weight: 600;
         }
-        .kpi-icon-pill {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
+
+        .kpi-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
-        .kpi-icon-blue { background: rgba(37, 99, 235, 0.15); color: #60A5FA; }
-        .kpi-icon-cyan { background: rgba(2, 132, 199, 0.15); color: #38BDF8; }
-        .kpi-icon-amber { background: rgba(217, 119, 6, 0.15); color: #FBBF24; }
-        .kpi-icon-emerald { background: rgba(5, 150, 105, 0.15); color: #34D399; }
-        .kpi-icon-purple { background: rgba(139, 92, 246, 0.15); color: #C084FC; }
 
-        .kpi-value-row {
-            display: flex;
-            align-items: baseline;
-            gap: 0.6rem;
-        }
+        .icon-blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+        .icon-gold { background: rgba(217, 119, 6, 0.15); color: #fbbf24; }
+        .icon-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .icon-cyan { background: rgba(6, 182, 212, 0.15); color: #38bdf8; }
+        .icon-purple { background: rgba(139, 92, 246, 0.15); color: #c084fc; }
+
         .kpi-value {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.85rem;
+            font-size: 1.7rem;
             font-weight: 700;
             color: #fff;
+            margin-bottom: 0.35rem;
         }
+
         .kpi-trend {
             font-size: 0.75rem;
-            font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 0.2rem;
-        }
-        .trend-up { color: #10B981; }
-        .trend-down { color: #EF4444; }
-
-        .kpi-footer-note {
-            font-size: 0.72rem;
-            color: var(--text-dim);
-            margin-top: 0.4rem;
+            gap: 0.35rem;
         }
 
-        /* Analytics Dual Row */
+        .trend-up { color: #34d399; }
+        .trend-down { color: #f87171; }
+        .trend-subtext { color: var(--text-dim); }
+
+        /* ------------------------------------------------------------- */
+        /* CHARTS & ACTIVITY ROW                                         */
+        /* ------------------------------------------------------------- */
         .analytics-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1.3fr;
             gap: 1.25rem;
-        }
-        @media (max-width: 1024px) {
-            .analytics-grid {
-                grid-template-columns: 1fr;
-            }
+            margin-bottom: 2rem;
         }
 
-        .chart-card {
+        @media (max-width: 1200px) {
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel-box {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
+            padding: 1.35rem;
+            backdrop-filter: blur(12px);
         }
 
-        .chart-header {
+        .panel-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.15rem;
         }
-        .chart-title {
+
+        .panel-heading {
             font-family: 'Outfit', sans-serif;
             font-size: 1.05rem;
             font-weight: 600;
-            color: #fff;
         }
-        .chart-legend {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+
+        .select-filter {
+            background: #0b111e;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
             font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            outline: none;
         }
 
-        /* SVG Chart Simulation */
-        .chart-canvas {
+        .chart-container {
+            position: relative;
+            height: 220px;
             width: 100%;
-            height: 200px;
-            position: relative;
-        }
-
-        /* Donut Simulation */
-        .donut-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem 0;
-            position: relative;
-        }
-        .donut-svg-wrapper {
-            position: relative;
-            width: 150px;
-            height: 150px;
-        }
-        .donut-center-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .donut-center-number {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-        }
-        .donut-center-label {
-            font-size: 0.65rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-        }
-
-        .activity-breakdown-list {
-            width: 100%;
-            margin-top: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .breakdown-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--text-muted);
         }
 
         /* Activity Feed */
-        .activity-feed-list {
+        .activity-list {
             display: flex;
             flex-direction: column;
-            gap: 0.85rem;
-            overflow-y: auto;
-            max-height: 230px;
+            gap: 0.75rem;
         }
+
         .activity-item {
             display: flex;
             align-items: flex-start;
@@ -730,278 +618,187 @@
             padding-bottom: 0.75rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
+
         .activity-item:last-child {
             border-bottom: none;
             padding-bottom: 0;
         }
-        .activity-icon-bubble {
+
+        .activity-badge {
             width: 28px;
             height: 28px;
-            border-radius: 50%;
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.75rem;
             flex-shrink: 0;
         }
-        .activity-text-col {
+
+        .activity-info {
             flex: 1;
-            line-height: 1.3;
         }
-        .activity-desc {
+
+        .activity-text {
             font-size: 0.8rem;
             color: var(--text-main);
+            margin-bottom: 0.15rem;
         }
+
         .activity-time {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             color: var(--text-dim);
         }
 
-        /* Dynamic Tenant Views Section */
-        .tenant-view-container {
-            display: none;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .tenant-view-container.active-view {
-            display: flex;
+        /* ------------------------------------------------------------- */
+        /* DYNAMIC HUBS (TIIPE vs NOVATRIX)                              */
+        /* ------------------------------------------------------------- */
+        .hub-section {
+            margin-bottom: 2.5rem;
         }
 
-        /* Hub Header Bar */
-        .hub-header-bar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.25rem 1.75rem;
+        .hub-banner {
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
-        .hub-title-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .hub-logo-mark {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-        .tiipe-hub-mark {
-            background: rgba(217, 119, 6, 0.15);
-            color: #FBBF24;
+
+        .hub-banner.tiipe {
+            background: linear-gradient(90deg, rgba(217, 119, 6, 0.2) 0%, rgba(30, 58, 138, 0.2) 100%);
             border: 1px solid rgba(217, 119, 6, 0.3);
         }
-        .novatrix-hub-mark {
-            background: rgba(37, 99, 235, 0.15);
-            color: #60A5FA;
+
+        .hub-banner.novatrix {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%);
             border: 1px solid rgba(37, 99, 235, 0.3);
         }
 
-        /* Data Tables & Cards Grid */
-        .cards-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        @media (max-width: 900px) {
-            .cards-grid-2 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .cards-grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.25rem;
-        }
-        @media (max-width: 1024px) {
-            .cards-grid-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 600px) {
-            .cards-grid-4 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Item Cards */
-        .item-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.25rem;
-            transition: all 0.2s ease;
-        }
-        .item-card:hover {
-            border-color: var(--border-glow);
-            background: var(--bg-card-hover);
-        }
-        .item-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-        .item-card-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #fff;
-        }
-        .item-card-desc {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-
-        /* Badges */
-        .badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.2rem 0.55rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-        .badge-active { background: rgba(16, 185, 129, 0.15); color: #34D399; }
-        .badge-draft { background: rgba(148, 163, 184, 0.15); color: #94A3B8; }
-        .badge-pending { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
-        .badge-high { background: rgba(239, 68, 68, 0.15); color: #F87171; }
-        .badge-medium { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
-        .badge-low { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
-
-        /* Kanban Columns */
-        .kanban-board {
+        .cards-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1.25rem;
         }
-        @media (max-width: 900px) {
-            .kanban-board {
-                grid-template-columns: 1fr;
-            }
-        }
-        .kanban-col {
-            background: rgba(18, 26, 43, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .kanban-col-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #fff;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .kanban-ticket {
-            background: #182238;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
-            padding: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .kanban-ticket:hover {
-            border-color: var(--novatrix-blue);
-            transform: translateY(-1px);
-        }
-        .ticket-id-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            margin-bottom: 0.4rem;
-        }
-        .ticket-title {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #fff;
-            margin-bottom: 0.5rem;
+
+        @media (max-width: 1000px) {
+            .cards-row { grid-template-columns: 1fr; }
         }
 
-        /* Mentorship Review Detail Card */
-        .review-card-layout {
+        .content-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.5rem;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 1.5rem;
-        }
-        @media (max-width: 900px) {
-            .review-card-layout {
-                grid-template-columns: 1fr;
-            }
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+            transition: all 0.2s ease;
         }
 
-        .applicant-profile-box {
+        .content-card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .card-header-line {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.25rem;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
         }
-        .applicant-avatar-img {
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            border: 2px solid var(--tiipe-gold);
-        }
-        .skills-tag-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin: 0.75rem 0;
-        }
-        .skill-tag {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.75rem;
-            padding: 0.2rem 0.55rem;
+
+        .card-price-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #34d399;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.2rem 0.5rem;
             border-radius: 6px;
-            color: var(--text-muted);
         }
 
-        .jitsi-schedule-box {
-            background: #0B101D;
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .card-meta {
+            font-size: 0.775rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .card-progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .card-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 999px;
+        }
+
+        /* Support Ticket Kanban */
+        .ticket-kanban {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .kanban-col {
+            background: rgba(10, 15, 25, 0.6);
             border: 1px solid var(--border-color);
             border-radius: 10px;
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+            padding: 0.85rem;
         }
-        .jitsi-link-input {
+
+        .kanban-header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
             display: flex;
-            gap: 0.5rem;
+            justify-content: space-between;
         }
-        .jitsi-input {
-            flex: 1;
-            background: #121A2B;
+
+        .ticket-item {
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 0.45rem 0.75rem;
-            font-family: monospace;
-            font-size: 0.78rem;
-            color: #38BDF8;
-            outline: none;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .ticket-badge {
+            font-size: 0.68rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .badge-high { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .badge-med { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .badge-low { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+
+        /* Detail Cards (Mentorship & Case Studies) */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .details-grid { grid-template-columns: 1fr; }
         }
 
         /* Modal Overlay */
@@ -1009,838 +806,851 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 999;
         }
-        .modal-overlay.show {
+
+        .modal-overlay.active {
             display: flex;
         }
 
-        .modal-card {
-            background: #121A2B;
+        .modal-content {
+            background: #0f172a;
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            width: 90%;
-            max-width: 580px;
+            width: 100%;
+            max-width: 520px;
             padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
         }
-        .modal-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-        }
-        .modal-close-btn {
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
+
         .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
+            margin-bottom: 1.25rem;
         }
+
         .form-label {
+            display: block;
             font-size: 0.8rem;
-            font-weight: 600;
             color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 500;
         }
-        .form-input, .form-textarea, .form-select {
-            background: #090D16;
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 0.6rem 0.85rem;
             color: #fff;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             outline: none;
         }
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
+
+        .form-input:focus {
             border-color: var(--novatrix-blue);
         }
     </style>
 </head>
 <body>
 
-    <div class="app-layout">
-
-        <!-- Left Navigation Sidebar -->
-        <aside>
-            <!-- Unified Brand Header -->
-            <div class="brand-header">
-                <div class="brand-icon-wrapper">
-                    <i class="fas fa-layer-group"></i>
+    <!-- ------------------------------------------------------------- -->
+    <!-- TOP BAR                                                       -->
+    <!-- ------------------------------------------------------------- -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="/" class="brand-header">
+                <div class="brand-icon-wrap">
+                    <i class="fa-solid fa-layer-group"></i>
                 </div>
                 <div class="brand-title-group">
-                    <h2>TIIPE & NOVATRIX</h2>
-                    <p>Unified Multi-Tenant Control</p>
+                    <h1>TIIPE & NOVATRIX</h1>
+                    <p>Unified Multi-Tenant Admin Dashboard</p>
+                </div>
+            </a>
+
+            <!-- Dynamic Tenant Switcher Dropdown -->
+            <div class="tenant-switcher-dropdown">
+                <button class="tenant-switch-btn" id="tenantMenuBtn" onclick="toggleTenantDropdown()">
+                    <span id="currentTenantIcon"><i class="fa-solid fa-globe" style="color:#a78bfa;"></i></span>
+                    <span id="currentTenantName">Master Overview (Global)</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; margin-left: 0.25rem; color: var(--text-dim);"></i>
+                </button>
+
+                <div class="tenant-menu-list" id="tenantMenuList">
+                    <div class="tenant-menu-item active" onclick="switchTenantView('master', 'Master Overview (Global)', 'fa-globe', '#a78bfa', 'public')">
+                        <i class="fa-solid fa-globe" style="color:#a78bfa;"></i>
+                        <div>
+                            <div style="font-weight:600; color:#fff;">Master Overview (Global)</div>
+                            <div style="font-size:0.7rem; color:var(--text-dim);">Cross-tenant telemetry & RBAC</div>
+                        </div>
+                    </div>
+
+                    <div class="tenant-menu-item" onclick="switchTenantView('tiipe', 'TIIPE (Public Education)', 'fa-graduation-cap', '#fbbf24', 'tiipe')">
+                        <i class="fa-solid fa-graduation-cap" style="color:#fbbf24;"></i>
+                        <div>
+                            <div style="font-weight:600; color:#fff;">TIIPE (Public Education)</div>
+                            <div style="font-size:0.7rem; color:var(--text-dim);">LMS, Mentorship, Health & Radio</div>
+                        </div>
+                    </div>
+
+                    <div class="tenant-menu-item" onclick="switchTenantView('novatrix', 'Novatrix (Technology & Workforce)', 'fa-laptop-code', '#60a5fa', 'novatrix')">
+                        <i class="fa-solid fa-laptop-code" style="color:#60a5fa;"></i>
+                        <div>
+                            <div style="font-weight:600; color:#fff;">Novatrix (Tech & Workforce)</div>
+                            <div style="font-size:0.7rem; color:var(--text-dim);">4 Pillars, Training & Support Desk</div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Active Tenant Badge in Sidebar -->
-            <div id="sidebarTenantCard" class="tenant-status-card">
-                <div id="sidebarTenantIcon" class="tenant-status-icon">
-                    <i class="fas fa-university"></i>
-                </div>
-                <div class="tenant-status-info">
-                    <h4 id="sidebarTenantName">Master Overview</h4>
-                    <span id="sidebarTenantSchema" class="schema-pill">active_schema: public</span>
-                </div>
+        <div class="topbar-center">
+            <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="search-input" id="globalSearch" placeholder="Search users, courses, programs, tickets, case studies..." oninput="handleSearch(this.value)">
+            </div>
+        </div>
+
+        <div class="topbar-right">
+            <div class="schema-badge">
+                <span class="schema-badge-dot"></span>
+                <span id="activeSchemaLabel">active_schema: public</span>
             </div>
 
-            <!-- Navigation Links -->
-            <div class="nav-section-title">Core Management</div>
-            <ul id="sidebarNavList" class="nav-list">
-                <!-- Nav items dynamically switch based on active view -->
-                <li class="nav-item active" onclick="switchView('master')">
-                    <a>
-                        <span class="nav-link-content"><i class="fas fa-chart-pie"></i> Executive Overview</span>
-                    </a>
-                </li>
-                <li class="nav-item" onclick="switchView('tiipe')">
-                    <a>
-                        <span class="nav-link-content"><i class="fas fa-graduation-cap"></i> TIIPE Public Education</span>
-                        <span class="nav-badge gold">LMS</span>
-                    </a>
-                </li>
-                <li class="nav-item" onclick="switchView('novatrix')">
-                    <a>
-                        <span class="nav-link-content"><i class="fas fa-cubes"></i> Novatrix Tech Services</span>
-                        <span class="nav-badge blue">4 Pillars</span>
-                    </a>
-                </li>
-                <li class="nav-item" onclick="switchView('files')">
-                    <a>
-                        <span class="nav-link-content"><i class="fas fa-folder-open"></i> Media & S3 Files</span>
-                    </a>
-                </li>
-            </ul>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                <i class="fa-solid fa-plus"></i>
+                <span>Create</span>
+            </button>
 
-            <div class="nav-section-title" style="margin-top: 1.5rem;">System & API</div>
-            <ul class="nav-list">
-                <li class="nav-item">
-                    <a href="/admin/" target="_blank">
-                        <span class="nav-link-content"><i class="fas fa-shield-alt"></i> Django Admin Portal</span>
-                        <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/api/docs/" target="_blank">
-                        <span class="nav-link-content"><i class="fas fa-code"></i> Swagger OpenAPI 3.0</span>
-                        <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/health/" target="_blank">
-                        <span class="nav-link-content"><i class="fas fa-heartbeat"></i> Health Telemetry</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="/api/docs/" target="_blank" class="btn btn-outline" title="Launch OpenAPI 3.0 Interactive Docs">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Swagger Docs</span>
+            </a>
+
+            <a href="/admin/" target="_blank" class="btn btn-outline" title="Django Native Admin Portal">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Django Admin</span>
+            </a>
+
+            <div class="user-profile-badge">
+                <div class="avatar-circle">UA</div>
+                <div style="text-align: left; line-height: 1.2;">
+                    <div style="font-size: 0.78rem; font-weight: 600;">Umar Abdullahi</div>
+                    <div style="font-size: 0.68rem; color: #34d399;">Super Admin</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ------------------------------------------------------------- -->
+    <!-- MAIN LAYOUT                                                   -->
+    <!-- ------------------------------------------------------------- -->
+    <div class="layout-container">
+
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <div class="sidebar-brand-card">
+                    <div class="sidebar-brand-logo master" id="sidebarBrandIcon">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.825rem; font-weight: 700;" id="sidebarBrandName">Master Control</div>
+                        <div style="font-size: 0.7rem; color: #34d399;" id="sidebarSchemaText">active_schema: public</div>
+                    </div>
+                </div>
+
+                <ul class="sidebar-menu" id="sidebarMenu">
+                    <!-- Populated dynamically based on tenant view -->
+                </ul>
+            </div>
+
+            <div class="sidebar-footer">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-dim);">
+                    <span>Version 1.0.0</span>
+                    <span style="color: #34d399;"><i class="fa-solid fa-circle-check"></i> PostgreSQL Synced</span>
+                </div>
+            </div>
         </aside>
 
-        <!-- Main Column Area -->
-        <main>
+        <!-- Main Content Area -->
+        <main class="content-area">
 
-            <!-- Top Header Bar -->
-            <header>
-                <div class="top-left-controls">
-                    <!-- Tenant Switcher Dropdown -->
-                    <div class="tenant-selector">
-                        <button class="tenant-btn" onclick="toggleTenantDropdown()">
-                            <i class="fas fa-globe"></i>
-                            <span id="headerTenantLabel">Master Overview (Global)</span>
-                            <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--text-dim);"></i>
-                        </button>
-                        <div id="tenantDropdownMenu" class="tenant-dropdown-menu">
-                            <div class="tenant-option active" onclick="selectTenant('master')">
-                                <i class="fas fa-globe" style="color: #60A5FA;"></i>
-                                <div>
-                                    <div style="font-weight: 600; color: #fff;">Master Overview (Global)</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">Cross-tenant telemetry</div>
-                                </div>
-                            </div>
-                            <div class="tenant-option" onclick="selectTenant('tiipe')">
-                                <i class="fas fa-university" style="color: #FBBF24;"></i>
-                                <div>
-                                    <div style="font-weight: 600; color: #fff;">TIIPE (Public Education)</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">LMS, Mentorship, 501(c)(3)</div>
-                                </div>
-                            </div>
-                            <div class="tenant-option" onclick="selectTenant('novatrix')">
-                                <i class="fas fa-laptop-code" style="color: #38BDF8;"></i>
-                                <div>
-                                    <div style="font-weight: 600; color: #fff;">Novatrix (Technology & Workforce)</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">4 Pillars, Training, Support</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Global Search Bar -->
-                    <div class="search-bar-wrapper">
-                        <i class="fas fa-search"></i>
-                        <input type="text" class="search-input" placeholder="Search users, courses, programs, tickets...">
-                        <span class="search-shortcut">⌘K</span>
-                    </div>
+            <!-- Page Title -->
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title" id="mainDashboardTitle">Executive Master Dashboard</h2>
+                    <p class="page-subtitle" id="mainDashboardSubtitle">Cross-tenant performance overview, revenue streams, and real-time activity metrics.</p>
                 </div>
-
-                <div class="top-right-controls">
-                    <div class="schema-badge-pill">
-                        <span class="dot"></span>
-                        <span id="headerActiveSchema">active_schema: public</span>
-                    </div>
-
-                    <button class="btn btn-primary" onclick="openCreateModal()">
-                        <i class="fas fa-plus"></i>
-                        <span>+ Create</span>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="refreshDashboardData()" class="btn btn-outline">
+                        <i class="fa-solid fa-rotate"></i>
+                        <span>Refresh Telemetry</span>
                     </button>
-
-                    <a href="/api/docs/" target="_blank" class="btn btn-outline">
-                        <i class="fas fa-book"></i> Swagger Docs
-                    </a>
-
-                    <!-- User Profile Avatar -->
-                    <div class="user-profile-widget">
-                        <div class="user-avatar">UA</div>
-                        <div class="user-meta">
-                            <div class="user-name">Umar Abdullahi</div>
-                            <div class="user-role">Super Admin</div>
-                        </div>
-                    </div>
                 </div>
-            </header>
-
-            <!-- Dashboard Content Container -->
-            <div class="content-container">
-
-                <!-- ========================================================= -->
-                <!-- VIEW 1: EXECUTIVE MASTER DASHBOARD (GLOBAL)               -->
-                <!-- ========================================================= -->
-                <div id="masterView" class="tenant-view-container active-view">
-                    
-                    <div class="section-header-row">
-                        <div class="section-heading">
-                            <h2>Executive Master Dashboard (Global View)</h2>
-                            <p>Real-time cross-tenant telemetry across TIIPE and Novatrix platforms.</p>
-                        </div>
-                    </div>
-
-                    <!-- 5 KPI Cards -->
-                    <div class="kpi-grid">
-                        <!-- Total Learners -->
-                        <div class="kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Total Learners</span>
-                                <span class="kpi-icon-pill kpi-icon-blue"><i class="fas fa-user-graduate"></i></span>
-                            </div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-value">2,483</span>
-                                <span class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> 12%</span>
-                            </div>
-                            <div class="kpi-footer-note">vs. last 30 days</div>
-                        </div>
-
-                        <!-- B2B Inquiries -->
-                        <div class="kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">B2B Inquiries</span>
-                                <span class="kpi-icon-pill kpi-icon-cyan"><i class="fas fa-briefcase"></i></span>
-                            </div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-value">187</span>
-                                <span class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> 28%</span>
-                            </div>
-                            <div class="kpi-footer-note">vs. last 30 days</div>
-                        </div>
-
-                        <!-- 501(c)(3) Donations -->
-                        <div class="kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">501(c)(3) Donations</span>
-                                <span class="kpi-icon-pill kpi-icon-amber"><i class="fas fa-hand-holding-usd"></i></span>
-                            </div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-value">$48,320</span>
-                                <span class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> 16%</span>
-                            </div>
-                            <div class="kpi-footer-note">TIIPE sub-ledger</div>
-                        </div>
-
-                        <!-- Course Revenue -->
-                        <div class="kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Course Revenue</span>
-                                <span class="kpi-icon-pill kpi-icon-emerald"><i class="fas fa-receipt"></i></span>
-                            </div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-value">$32,650</span>
-                                <span class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> 24%</span>
-                            </div>
-                            <div class="kpi-footer-note">Novatrix Training</div>
-                        </div>
-
-                        <!-- Support SLA -->
-                        <div class="kpi-card">
-                            <div class="kpi-top">
-                                <span class="kpi-label">Support SLA</span>
-                                <span class="kpi-icon-pill kpi-icon-purple"><i class="fas fa-headset"></i></span>
-                            </div>
-                            <div class="kpi-value-row">
-                                <span class="kpi-value">94%</span>
-                                <span class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> 6%</span>
-                            </div>
-                            <div class="kpi-footer-note">avg. response time 2.4h</div>
-                        </div>
-                    </div>
-
-                    <!-- Analytics Grid -->
-                    <div class="analytics-grid">
-                        
-                        <!-- Revenue & Donations Chart Card -->
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <div class="chart-title">Revenue & Donations Trend</div>
-                                <div class="chart-legend">
-                                    <div class="legend-item"><span class="legend-dot" style="background: #2563EB;"></span> Course Revenue</div>
-                                    <div class="legend-item"><span class="legend-dot" style="background: #F59E0B;"></span> Donations</div>
-                                </div>
-                            </div>
-                            <div class="chart-canvas">
-                                <svg width="100%" height="100%" viewBox="0 0 500 200" preserveAspectRatio="none">
-                                    <defs>
-                                        <linearGradient id="gradBlue" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#2563EB;stop-opacity:0.4" />
-                                            <stop offset="100%" style="stop-color:#2563EB;stop-opacity:0.0" />
-                                        </linearGradient>
-                                        <linearGradient id="gradGold" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:0.35" />
-                                            <stop offset="100%" style="stop-color:#F59E0B;stop-opacity:0.0" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Blue Course Area -->
-                                    <path d="M0,170 Q100,120 200,140 T400,60 T500,40 L500,200 L0,200 Z" fill="url(#gradBlue)" />
-                                    <path d="M0,170 Q100,120 200,140 T400,60 T500,40" fill="none" stroke="#2563EB" stroke-width="3" />
-                                    <!-- Gold Donations Area -->
-                                    <path d="M0,185 Q120,160 220,110 T380,95 T500,75 L500,200 L0,200 Z" fill="url(#gradGold)" />
-                                    <path d="M0,185 Q120,160 220,110 T380,95 T500,75" fill="none" stroke="#F59E0B" stroke-width="3" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Activity Breakdown Donut -->
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <div class="chart-title">Platform Activity</div>
-                                <span class="badge badge-active">Live</span>
-                            </div>
-                            <div class="donut-container">
-                                <div class="donut-svg-wrapper">
-                                    <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#1E293B" stroke-width="3.8" />
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#2563EB" stroke-width="3.8" stroke-dasharray="45, 100" />
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#F59E0B" stroke-width="3.8" stroke-dasharray="25, 100" stroke-dashoffset="-45" />
-                                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10B981" stroke-width="3.8" stroke-dasharray="20, 100" stroke-dashoffset="-70" />
-                                    </svg>
-                                    <div class="donut-center-text">
-                                        <div class="donut-center-number">5,421</div>
-                                        <div class="donut-center-label">Total Events</div>
-                                    </div>
-                                </div>
-                                <div class="activity-breakdown-list">
-                                    <div class="breakdown-row"><span><i class="fas fa-circle" style="color: #2563EB; font-size: 0.55rem;"></i> Courses & LMS</span> <strong>45%</strong></div>
-                                    <div class="breakdown-row"><span><i class="fas fa-circle" style="color: #F59E0B; font-size: 0.55rem;"></i> Mentorship Calls</span> <strong>25%</strong></div>
-                                    <div class="breakdown-row"><span><i class="fas fa-circle" style="color: #10B981; font-size: 0.55rem;"></i> Support & Inquiries</span> <strong>30%</strong></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Real-time Activity Feed -->
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <div class="chart-title">Recent Activity</div>
-                                <span style="font-size: 0.72rem; color: var(--text-dim);">Live Stream</span>
-                            </div>
-                            <div class="activity-feed-list">
-                                <div class="activity-item">
-                                    <div class="activity-icon-bubble" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">
-                                        <i class="fas fa-user-check"></i>
-                                    </div>
-                                    <div class="activity-text-col">
-                                        <div class="activity-desc">New mentor application from Amara Okafor</div>
-                                        <div class="activity-time">2m ago &bull; TIIPE LMS</div>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon-bubble" style="background: rgba(245, 158, 11, 0.15); color: #FBBF24;">
-                                        <i class="fas fa-hand-holding-usd"></i>
-                                    </div>
-                                    <div class="activity-text-col">
-                                        <div class="activity-desc">Donation of $500.00 received via Stripe</div>
-                                        <div class="activity-time">12m ago &bull; 501(c)(3) Subledger</div>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon-bubble" style="background: rgba(37, 99, 235, 0.15); color: #60A5FA;">
-                                        <i class="fas fa-graduation-cap"></i>
-                                    </div>
-                                    <div class="activity-text-col">
-                                        <div class="activity-desc">Course enrollment: Flutter Development</div>
-                                        <div class="activity-time">28m ago &bull; Novatrix Training</div>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-icon-bubble" style="background: rgba(239, 68, 68, 0.15); color: #F87171;">
-                                        <i class="fas fa-ticket-alt"></i>
-                                    </div>
-                                    <div class="activity-text-col">
-                                        <div class="activity-desc">Support ticket #TKT-482 escalated</div>
-                                        <div class="activity-time">1h ago &bull; High Priority</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- ========================================================= -->
-                <!-- VIEW 2: TIIPE MANAGEMENT HUB                              -->
-                <!-- ========================================================= -->
-                <div id="tiipeView" class="tenant-view-container">
-                    
-                    <div class="hub-header-bar">
-                        <div class="hub-title-group">
-                            <div class="hub-logo-mark tiipe-hub-mark">
-                                <i class="fas fa-university"></i>
-                            </div>
-                            <div>
-                                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; color: #fff;">TIIPE Management Hub</h2>
-                                <p style="font-size: 0.82rem; color: var(--text-muted);">Education &bull; Mentorship &bull; Maternal Health &bull; AdieTalk Radio &bull; 501(c)(3) Donations</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 0.75rem;">
-                            <button class="btn btn-tiipe" onclick="openCreateModal('program')">+ Create Program</button>
-                            <button class="btn btn-outline" onclick="testApiEndpoint('tiipe', '/api/v1/lms/programs/')">⚡ Fetch API</button>
-                        </div>
-                    </div>
-
-                    <!-- Programs & Mentorship Grid -->
-                    <div class="cards-grid-2">
-                        
-                        <!-- Programs Card Column -->
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <div class="chart-title">LMS Programs & Initiatives</div>
-                                <span class="badge badge-active">3 Active</span>
-                            </div>
-                            <div style="display: flex; flex-direction: column; gap: 0.85rem;">
-                                <div class="item-card">
-                                    <div class="item-card-header">
-                                        <span class="item-card-title">Web Development Bootcamp</span>
-                                        <span class="badge badge-active">$150 &bull; Enrolled 48/50</span>
-                                    </div>
-                                    <p class="item-card-desc">Fullstack web curriculum with hands-on capstone projects and mentor office hours.</p>
-                                    <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">Manage Cohort &rarr;</button>
-                                </div>
-
-                                <div class="item-card">
-                                    <div class="item-card-header">
-                                        <span class="item-card-title">Health Literacy for Mothers</span>
-                                        <span class="badge badge-active">$100 &bull; Enrolled 32/40</span>
-                                    </div>
-                                    <p class="item-card-desc">Maternal and reproductive healthcare literacy workshops tailored for community advocates.</p>
-                                    <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">Manage Cohort &rarr;</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Mentorship Review Detail Component -->
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <div class="chart-title">Mentorship Application Review</div>
-                                <span class="badge badge-pending">Pending Review</span>
-                            </div>
-                            <div class="applicant-profile-box">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Amara" class="applicant-avatar-img">
-                                <div>
-                                    <h4 style="color: #fff; font-size: 1rem; font-weight: 600;">Amara Okafor</h4>
-                                    <div style="font-size: 0.78rem; color: var(--text-muted);">Computer Science &bull; Abuja, FCT &bull; 3 yrs experience</div>
-                                </div>
-                            </div>
-                            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.75rem;">
-                                "I am a 300L Computer Science student passionate about building scalable web applications and community tools. Seeking guidance on career path."
-                            </p>
-                            <div class="skills-tag-group">
-                                <span class="skill-tag">Python</span>
-                                <span class="skill-tag">JavaScript</span>
-                                <span class="skill-tag">Django</span>
-                                <span class="skill-tag">Problem Solving</span>
-                            </div>
-
-                            <!-- Schedule Jitsi Box -->
-                            <div class="jitsi-schedule-box">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <strong style="color: #fff; font-size: 0.82rem;"><i class="fas fa-video" style="color: #38BDF8;"></i> Schedule Jitsi Session</strong>
-                                    <span style="font-size: 0.75rem; color: var(--text-dim);">Apr 28, 2026 &bull; 10:00 AM</span>
-                                </div>
-                                <div class="jitsi-link-input">
-                                    <input type="text" class="jitsi-input" value="https://meet.jit.si/tiipe-mentorship-482" readonly>
-                                    <button class="btn btn-outline" onclick="copyJitsiLink()" style="padding: 0.4rem 0.7rem; font-size: 0.75rem;"><i class="fas fa-copy"></i></button>
-                                </div>
-                                <div style="display: flex; gap: 0.6rem; margin-top: 0.25rem;">
-                                    <button class="btn btn-primary" style="flex: 1; font-size: 0.78rem; padding: 0.4rem;" onclick="approveMentor()">Approve & Schedule</button>
-                                    <button class="btn btn-outline" style="font-size: 0.78rem; padding: 0.4rem; color: #F87171;">Reject</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- ========================================================= -->
-                <!-- VIEW 3: NOVATRIX MANAGEMENT HUB                           -->
-                <!-- ========================================================= -->
-                <div id="novatrixView" class="tenant-view-container">
-                    
-                    <div class="hub-header-bar">
-                        <div class="hub-title-group">
-                            <div class="hub-logo-mark novatrix-hub-mark">
-                                <i class="fas fa-cubes"></i>
-                            </div>
-                            <div>
-                                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; color: #fff;">Novatrix Management Hub</h2>
-                                <p style="font-size: 0.82rem; color: var(--text-muted);">4 Service Pillars &bull; Industry Solutions &bull; Training Catalog &bull; Support Desk</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 0.75rem;">
-                            <button class="btn btn-primary" onclick="openCreateModal('ticket')">+ New Ticket</button>
-                            <button class="btn btn-outline" onclick="testApiEndpoint('novatrix', '/api/v1/services/pillars/')">⚡ Fetch API</button>
-                        </div>
-                    </div>
-
-                    <!-- 4 Service Pillars Grid -->
-                    <div class="cards-grid-4">
-                        <div class="item-card">
-                            <div style="font-size: 1.4rem; color: #38BDF8; margin-bottom: 0.5rem;"><i class="fas fa-compass"></i></div>
-                            <h4 class="item-card-title">Strategy & Advisory</h4>
-                            <p class="item-card-desc">Business digital roadmap and technical architecture advisory.</p>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">12 Active Clients</div>
-                        </div>
-                        <div class="item-card">
-                            <div style="font-size: 1.4rem; color: #60A5FA; margin-bottom: 0.5rem;"><i class="fas fa-laptop-code"></i></div>
-                            <h4 class="item-card-title">Development & Integration</h4>
-                            <p class="item-card-desc">Custom web, mobile, and enterprise backend engineering.</p>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">18 Active Clients</div>
-                        </div>
-                        <div class="item-card">
-                            <div style="font-size: 1.4rem; color: #818CF8; margin-bottom: 0.5rem;"><i class="fas fa-brain"></i></div>
-                            <h4 class="item-card-title">Data & AI</h4>
-                            <p class="item-card-desc">Data lakehouses, ML pipelines, and automated intelligence systems.</p>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">9 Active Clients</div>
-                        </div>
-                        <div class="item-card">
-                            <div style="font-size: 1.4rem; color: #34D399; margin-bottom: 0.5rem;"><i class="fas fa-chalkboard-teacher"></i></div>
-                            <h4 class="item-card-title">Training & Workforce</h4>
-                            <p class="item-card-desc">Corporate cohort bootcamps, upskilling, and tech placement.</p>
-                            <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 600;">14 Active Cohorts</div>
-                        </div>
-                    </div>
-
-                    <!-- Support Ticket Kanban Board -->
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <div class="chart-title">Client Support Desk (Kanban Triage)</div>
-                            <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.35rem 0.75rem;">Filter Tickets</button>
-                        </div>
-                        <div class="kanban-board">
-                            
-                            <!-- Column Open -->
-                            <div class="kanban-col">
-                                <div class="kanban-col-header">
-                                    <span>OPEN</span>
-                                    <span class="badge badge-high">5</span>
-                                </div>
-                                <div class="kanban-ticket">
-                                    <div class="ticket-id-row">
-                                        <span>#TKT-482</span>
-                                        <span class="badge badge-high">High</span>
-                                    </div>
-                                    <div class="ticket-title">API Integration issue on webhook callback</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">2h ago &bull; Client: Fintech Ltd</div>
-                                </div>
-                                <div class="kanban-ticket">
-                                    <div class="ticket-id-row">
-                                        <span>#TKT-481</span>
-                                        <span class="badge badge-medium">Medium</span>
-                                    </div>
-                                    <div class="ticket-title">Training cohort login credentials email delay</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">4h ago &bull; Client: EduCorp</div>
-                                </div>
-                            </div>
-
-                            <!-- Column In Progress -->
-                            <div class="kanban-col">
-                                <div class="kanban-col-header">
-                                    <span>IN PROGRESS</span>
-                                    <span class="badge badge-medium">3</span>
-                                </div>
-                                <div class="kanban-ticket">
-                                    <div class="ticket-id-row">
-                                        <span>#TKT-477</span>
-                                        <span class="badge badge-high">High</span>
-                                    </div>
-                                    <div class="ticket-title">Mobile app push notification token sync</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">1h ago &bull; Assigned: Umar</div>
-                                </div>
-                            </div>
-
-                            <!-- Column Resolved -->
-                            <div class="kanban-col">
-                                <div class="kanban-col-header">
-                                    <span>RESOLVED</span>
-                                    <span class="badge badge-active">8</span>
-                                </div>
-                                <div class="kanban-ticket">
-                                    <div class="ticket-id-row">
-                                        <span>#TKT-472</span>
-                                        <span class="badge badge-low">Low</span>
-                                    </div>
-                                    <div class="ticket-title">Account setup and domain verification</div>
-                                    <div style="font-size: 0.7rem; color: var(--text-dim);">2h ago &bull; Resolved</div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- ========================================================= -->
-                <!-- VIEW 4: MEDIA & FILE ASSET MANAGER                        -->
-                <!-- ========================================================= -->
-                <div id="filesView" class="tenant-view-container">
-                    <div class="hub-header-bar">
-                        <div class="hub-title-group">
-                            <div class="hub-logo-mark" style="background: rgba(148, 163, 184, 0.15); color: #94A3B8;">
-                                <i class="fas fa-folder-open"></i>
-                            </div>
-                            <div>
-                                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; color: #fff;">S3 & DigitalOcean Spaces File Manager</h2>
-                                <p style="font-size: 0.82rem; color: var(--text-muted);">Dynamic tenant-prefix scoped media assets and document uploads</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary"><i class="fas fa-upload"></i> Upload Media</button>
-                    </div>
-
-                    <div class="chart-card">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; color: var(--text-muted);">
-                            <thead>
-                                <tr style="border-bottom: 1px solid var(--border-color); text-align: left;">
-                                    <th style="padding: 0.75rem 0.5rem; color: var(--text-main);">File Name</th>
-                                    <th style="padding: 0.75rem 0.5rem; color: var(--text-main);">Tenant Path</th>
-                                    <th style="padding: 0.75rem 0.5rem; color: var(--text-main);">Size</th>
-                                    <th style="padding: 0.75rem 0.5rem; color: var(--text-main);">Type</th>
-                                    <th style="padding: 0.75rem 0.5rem; color: var(--text-main);">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
-                                    <td style="padding: 0.75rem 0.5rem; color: #fff;"><i class="fas fa-image" style="color: #60A5FA; margin-right: 0.5rem;"></i> tiipe-hero-banner.jpg</td>
-                                    <td style="padding: 0.75rem 0.5rem; font-family: monospace;">tiipe/banners/</td>
-                                    <td style="padding: 0.75rem 0.5rem;">245 KB</td>
-                                    <td style="padding: 0.75rem 0.5rem;">JPEG Image</td>
-                                    <td style="padding: 0.75rem 0.5rem;"><button class="btn btn-outline" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Download</button></td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
-                                    <td style="padding: 0.75rem 0.5rem; color: #fff;"><i class="fas fa-file-pdf" style="color: #F87171; margin-right: 0.5rem;"></i> novatrix-capabilities.pdf</td>
-                                    <td style="padding: 0.75rem 0.5rem; font-family: monospace;">novatrix/documents/</td>
-                                    <td style="padding: 0.75rem 0.5rem;">1.4 MB</td>
-                                    <td style="padding: 0.75rem 0.5rem;">PDF Document</td>
-                                    <td style="padding: 0.75rem 0.5rem;"><button class="btn btn-outline" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Download</button></td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.04);">
-                                    <td style="padding: 0.75rem 0.5rem; color: #fff;"><i class="fas fa-podcast" style="color: #FBBF24; margin-right: 0.5rem;"></i> adietalk-ep42.mp3</td>
-                                    <td style="padding: 0.75rem 0.5rem; font-family: monospace;">tiipe/radio/</td>
-                                    <td style="padding: 0.75rem 0.5rem;">28.5 MB</td>
-                                    <td style="padding: 0.75rem 0.5rem;">MPEG Audio</td>
-                                    <td style="padding: 0.75rem 0.5rem;"><button class="btn btn-outline" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">Download</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- 5 KPI Cards -->
+            <section class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Total Learners</span>
+                        <div class="kpi-icon icon-blue"><i class="fa-solid fa-user-graduate"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiLearners">2,483</div>
+                    <div class="kpi-trend">
+                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 12%</span>
+                        <span class="trend-subtext">vs. last 30 days</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">B2B Inquiries</span>
+                        <div class="kpi-icon icon-purple"><i class="fa-solid fa-briefcase"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiInquiries">187</div>
+                    <div class="kpi-trend">
+                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 28%</span>
+                        <span class="trend-subtext">vs. last 30 days</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">501(c)(3) Donations</span>
+                        <div class="kpi-icon icon-gold"><i class="fa-solid fa-hand-holding-heart"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiDonations">$48,320</div>
+                    <div class="kpi-trend">
+                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 16%</span>
+                        <span class="trend-subtext">Stripe & PayPal</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Course Revenue</span>
+                        <div class="kpi-icon icon-green"><i class="fa-solid fa-dollar-sign"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiRevenue">$32,650</div>
+                    <div class="kpi-trend">
+                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 24%</span>
+                        <span class="trend-subtext">Training catalog</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-top">
+                        <span class="kpi-title">Support SLA</span>
+                        <div class="kpi-icon icon-cyan"><i class="fa-solid fa-headset"></i></div>
+                    </div>
+                    <div class="kpi-value" id="kpiSla">94%</div>
+                    <div class="kpi-trend">
+                        <span class="trend-up"><i class="fa-solid fa-arrow-trend-up"></i> 6%</span>
+                        <span class="trend-subtext">avg response 2.4h</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts and Activity Feed -->
+            <section class="analytics-grid">
+                <!-- Revenue & Donations Chart -->
+                <div class="panel-box">
+                    <div class="panel-header-row">
+                        <div class="panel-heading">📈 Revenue & Donations Flow</div>
+                        <select class="select-filter">
+                            <option>Last 6 months</option>
+                            <option>Last 30 days</option>
+                            <option>Year to date</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Platform Activity Breakdown -->
+                <div class="panel-box">
+                    <div class="panel-header-row">
+                        <div class="panel-heading">⚡ Platform Activity</div>
+                        <select class="select-filter">
+                            <option>Last 7 days</option>
+                            <option>Last 24h</option>
+                        </select>
+                    </div>
+                    <div class="chart-container" style="height: 180px;">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                    <div style="text-align: center; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                        <strong>5,421</strong> Total Actions Recorded
+                    </div>
+                </div>
+
+                <!-- Recent Activity Feed -->
+                <div class="panel-box">
+                    <div class="panel-header-row">
+                        <div class="panel-heading">🔔 Recent Activity</div>
+                        <span style="font-size: 0.72rem; color: #34d399;">Live Stream</span>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <div class="activity-item">
+                            <div class="activity-badge icon-gold"><i class="fa-solid fa-user-plus"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-text"><strong>Amina Yusuf</strong> applied for Mentorship (TIIPE)</div>
+                                <div class="activity-time">2m ago &bull; Pending Review</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-badge icon-green"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-text">Donation of <strong>$500.00</strong> received via Stripe</div>
+                                <div class="activity-time">12m ago &bull; Maternal Health Fund</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-badge icon-blue"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-text">Course enrollment: <strong>Flutter Mobile Basics</strong></div>
+                                <div class="activity-time">28m ago &bull; Novatrix Cohort</div>
+                            </div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-badge icon-purple"><i class="fa-solid fa-ticket"></i></div>
+                            <div class="activity-info">
+                                <div class="activity-text">Support ticket <strong>#TKT-482</strong> updated</div>
+                                <div class="activity-time">1h ago &bull; High Priority</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- --------------------------------------------------------- -->
+            <!-- DYNAMIC HUB CONTENT (TIIPE vs NOVATRIX)                   -->
+            <!-- --------------------------------------------------------- -->
+            
+            <!-- TIIPE Management Hub Section -->
+            <section class="hub-section" id="tiipeHubSection">
+                <div class="hub-banner tiipe">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fa-solid fa-graduation-cap" style="font-size: 1.5rem; color: #fbbf24;"></i>
+                        <div>
+                            <h3 style="font-family: 'Outfit'; font-size: 1.15rem; font-weight: 700;">TIIPE Management Hub</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Education &bull; Mentorship &bull; Maternal Health Literacy &bull; Media Radio &bull; 501(c)(3) Donations</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-gold" onclick="openProgramModal()">
+                        <i class="fa-solid fa-plus"></i> Create Program
+                    </button>
+                </div>
+
+                <div class="cards-row" id="tiipeProgramsList">
+                    <!-- Program 1 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <span class="card-price-tag">$150</span>
+                            <span class="ticket-badge badge-med">Active Cohort</span>
+                        </div>
+                        <h4 class="card-title">Web Development Bootcamp</h4>
+                        <div class="card-meta">Full-stack web fundamentals with mentors & real projects.</div>
+                        <div class="card-progress-bar">
+                            <div class="card-progress-fill" style="width: 80%;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim);">
+                            <span>Enrolled: 48/50</span>
+                            <a href="javascript:void(0)" onclick="testApi('tiipe', '/api/v1/lms/programs/')" style="color: #60a5fa; text-decoration: none;">View Details &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Program 2 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <span class="card-price-tag">$100</span>
+                            <span class="ticket-badge badge-low">Public Health</span>
+                        </div>
+                        <h4 class="card-title">Health Literacy for Mothers</h4>
+                        <div class="card-meta">Essential prenatal, postpartum & community health literacy.</div>
+                        <div class="card-progress-bar">
+                            <div class="card-progress-fill" style="width: 75%; background: #10b981;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim);">
+                            <span>Enrolled: 32/40</span>
+                            <a href="javascript:void(0)" onclick="testApi('tiipe', '/api/v1/lms/health-resources/')" style="color: #60a5fa; text-decoration: none;">View Details &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Program 3 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <span class="card-price-tag" style="color: #60a5fa; background: rgba(37,99,235,0.1);">Free</span>
+                            <span class="ticket-badge badge-low">Mentorship</span>
+                        </div>
+                        <h4 class="card-title">Mentorship Essentials</h4>
+                        <div class="card-meta">1-on-1 mentorship matching with industry professionals.</div>
+                        <div class="card-progress-bar">
+                            <div class="card-progress-fill" style="width: 90%; background: #f59e0b;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim);">
+                            <span>Enrolled: 135/150</span>
+                            <a href="javascript:void(0)" onclick="testApi('tiipe', '/api/v1/lms/mentorship-sessions/')" style="color: #60a5fa; text-decoration: none;">View Details &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Novatrix Management Hub Section -->
+            <section class="hub-section" id="novatrixHubSection">
+                <div class="hub-banner novatrix">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fa-solid fa-cubes" style="font-size: 1.5rem; color: #60a5fa;"></i>
+                        <div>
+                            <h3 style="font-family: 'Outfit'; font-size: 1.15rem; font-weight: 700;">Novatrix Management Hub</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">4 Service Pillars &bull; Industry Solutions &bull; Training &bull; Case Studies &bull; Support Desk</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="openPillarModal()">
+                        <i class="fa-solid fa-plus"></i> Add Service Pillar
+                    </button>
+                </div>
+
+                <div class="cards-row" id="novatrixPillarsList">
+                    <!-- Pillar 1 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <i class="fa-solid fa-chart-pie" style="color: #60a5fa; font-size: 1.25rem;"></i>
+                            <span class="ticket-badge badge-low">Pillar 1</span>
+                        </div>
+                        <h4 class="card-title">Strategy & Advisory</h4>
+                        <div class="card-meta">Business transformation & enterprise IT strategy consulting.</div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem;">
+                            <span>Active Clients: 12</span>
+                            <a href="javascript:void(0)" onclick="testApi('novatrix', '/api/v1/services/pillars/')" style="color: #60a5fa; text-decoration: none;">View Pillar &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 2 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <i class="fa-solid fa-code" style="color: #38bdf8; font-size: 1.25rem;"></i>
+                            <span class="ticket-badge badge-low">Pillar 2</span>
+                        </div>
+                        <h4 class="card-title">Development & Integration</h4>
+                        <div class="card-meta">Web, mobile & cloud software engineering with Django & Flutter.</div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem;">
+                            <span>Active Clients: 18</span>
+                            <a href="javascript:void(0)" onclick="testApi('novatrix', '/api/v1/services/case-studies/')" style="color: #60a5fa; text-decoration: none;">View Pillar &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- Pillar 3 -->
+                    <div class="content-card">
+                        <div class="card-header-line">
+                            <i class="fa-solid fa-brain" style="color: #c084fc; font-size: 1.25rem;"></i>
+                            <span class="ticket-badge badge-low">Pillar 3</span>
+                        </div>
+                        <h4 class="card-title">Data & AI Solutions</h4>
+                        <div class="card-meta">Analytics, machine learning, and enterprise data pipelines.</div>
+                        <div style="display:flex; justify-content:space-between; font-size: 0.75rem; color: var(--text-dim); margin-top: 1rem;">
+                            <span>Active Clients: 9</span>
+                            <a href="javascript:void(0)" onclick="testApi('novatrix', '/api/v1/services/industries/')" style="color: #60a5fa; text-decoration: none;">View Pillar &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Support Ticket Desk & Sample Detail Views -->
+            <section class="details-grid">
+                <!-- Mentorship Review Card -->
+                <div class="panel-box">
+                    <div class="panel-header-row">
+                        <div class="panel-heading">🤝 Mentorship Application Review</div>
+                        <span class="ticket-badge badge-med">Pending Review</span>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem;">
+                        <div class="avatar-circle" style="width: 44px; height: 44px; font-size: 1rem;">AY</div>
+                        <div>
+                            <h4 style="font-size: 0.95rem; font-weight: 600;">Amina Yusuf</h4>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Applied on Apr 12, 2026 &bull; Abuja, FCT</div>
+                            <div style="font-size: 0.78rem; color: var(--text-dim); margin-top: 0.25rem;">
+                                <em>"Passionate about empowering young people through STEM education."</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.8rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom: 0.35rem;">
+                            <span>📅 Scheduled Jitsi Session:</span>
+                            <strong>Apr 28, 2026 @ 10:00 AM</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>🔗 Video Call Link:</span>
+                            <code style="color: #60a5fa; font-size: 0.75rem;">https://meet.jit.si/mentorship-125</code>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn btn-primary" style="flex: 1; background: #059669;" onclick="alert('Mentor Amina Yusuf approved successfully!')">
+                            <i class="fa-solid fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-outline" style="flex: 1;" onclick="alert('Application archived.')">
+                            <i class="fa-solid fa-xmark"></i> Reject
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Support Ticket Desk Kanban -->
+                <div class="panel-box">
+                    <div class="panel-header-row">
+                        <div class="panel-heading">🎫 Support Ticket Desk</div>
+                        <button class="btn btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="testApi('novatrix', '/api/v1/services/tickets/')">
+                            + New Ticket
+                        </button>
+                    </div>
+
+                    <div class="ticket-kanban">
+                        <!-- Open -->
+                        <div class="kanban-col">
+                            <div class="kanban-header">
+                                <span>Open</span>
+                                <span class="ticket-badge badge-high">5</span>
+                            </div>
+                            <div class="ticket-item">
+                                <div style="font-weight: 600; margin-bottom: 0.2rem;">#TKT-482</div>
+                                <div style="color: var(--text-muted); font-size: 0.75rem;">API Integration issue</div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.4rem;">
+                                    <span class="ticket-badge badge-high">High</span>
+                                    <span style="font-size: 0.68rem; color: var(--text-dim);">2h ago</span>
+                                </div>
+                            </div>
+                            <div class="ticket-item">
+                                <div style="font-weight: 600; margin-bottom: 0.2rem;">#TKT-481</div>
+                                <div style="color: var(--text-muted); font-size: 0.75rem;">Training access problem</div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.4rem;">
+                                    <span class="ticket-badge badge-med">Med</span>
+                                    <span style="font-size: 0.68rem; color: var(--text-dim);">4h ago</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- In Progress -->
+                        <div class="kanban-col">
+                            <div class="kanban-header">
+                                <span>In Progress</span>
+                                <span class="ticket-badge badge-med">3</span>
+                            </div>
+                            <div class="ticket-item">
+                                <div style="font-weight: 600; margin-bottom: 0.2rem;">#TKT-477</div>
+                                <div style="color: var(--text-muted); font-size: 0.75rem;">Mobile app bug</div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.4rem;">
+                                    <span class="ticket-badge badge-high">High</span>
+                                    <span style="font-size: 0.68rem; color: var(--text-dim);">1d ago</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resolved -->
+                        <div class="kanban-col">
+                            <div class="kanban-header">
+                                <span>Resolved</span>
+                                <span class="ticket-badge badge-low">8</span>
+                            </div>
+                            <div class="ticket-item">
+                                <div style="font-weight: 600; margin-bottom: 0.2rem;">#TKT-472</div>
+                                <div style="color: var(--text-muted); font-size: 0.75rem;">Account setup</div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 0.4rem;">
+                                    <span class="ticket-badge badge-low">Low</span>
+                                    <span style="font-size: 0.68rem; color: var(--text-dim);">2d ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
         </main>
     </div>
 
-    <!-- Create Item Modal -->
-    <div id="createModal" class="modal-overlay">
-        <div class="modal-card">
+    <!-- ------------------------------------------------------------- -->
+    <!-- MODAL POPUPS                                                  -->
+    <!-- ------------------------------------------------------------- -->
+    <div class="modal-overlay" id="createProgramModal">
+        <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Create New Item</h3>
-                <button class="modal-close-btn" onclick="closeCreateModal()">&times;</button>
+                <h3 style="font-family: 'Outfit'; font-size: 1.25rem;">🎓 Create New LMS Program</h3>
+                <button onclick="closeModals()" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">&times;</button>
             </div>
-            <div class="form-group">
-                <label class="form-label">Title / Name</label>
-                <input type="text" id="modalInputTitle" class="form-input" placeholder="e.g. Flutter Mobile Engineering Bootcamp">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Target Tenant / Brand</label>
-                <select id="modalTenantSelect" class="form-select">
-                    <option value="tiipe">TIIPE (The Impact Institute)</option>
-                    <option value="novatrix">Novatrix Technology</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <textarea id="modalInputDesc" class="form-textarea" rows="3" placeholder="Brief outline and objectives..."></textarea>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
-                <button class="btn btn-outline" onclick="closeCreateModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="submitCreateForm()">Save & Publish</button>
-            </div>
+            <form onsubmit="handleCreateProgram(event)">
+                <div class="form-group">
+                    <label class="form-label">Program Name</label>
+                    <input type="text" class="form-input" placeholder="e.g. Maternal Health & Prenatal Literacy" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input">
+                        <option>Academic Tutoring</option>
+                        <option>Maternal Health Literacy</option>
+                        <option>Mentorship & Career</option>
+                        <option>Open-Access Policy</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Enrollment Fee ($)</label>
+                    <input type="number" class="form-input" placeholder="0 for Free" value="0">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeModals()">Cancel</button>
+                    <button type="submit" class="btn btn-gold">Publish Program</button>
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- ------------------------------------------------------------- -->
+    <!-- JAVASCRIPT LOGIC                                              -->
+    <!-- ------------------------------------------------------------- -->
     <script>
         let currentTenant = 'master';
+        let revenueChart = null;
+        let activityChart = null;
+
+        const sidebarMenus = {
+            master: [
+                { label: "Dashboard", icon: "fa-gauge-high", active: true },
+                { label: "LMS Programs & Learning", icon: "fa-graduation-cap" },
+                { label: "Mentorship Hub", icon: "fa-user-group" },
+                { label: "Maternal Health Literacy", icon: "fa-heart-pulse" },
+                { label: "Policy Briefs & Governance", icon: "fa-file-shield" },
+                { label: "AdieTalk Radio & Media", icon: "fa-podcast" },
+                { label: "Donations & Tax Receipts", icon: "fa-hand-holding-dollar" },
+                { label: "4 Service Pillars", icon: "fa-cubes" },
+                { label: "Training Catalog & Cohorts", icon: "fa-laptop-code" },
+                { label: "Support Ticket Desk", icon: "fa-headset" }
+            ],
+            tiipe: [
+                { label: "Dashboard", icon: "fa-gauge-high", active: true },
+                { label: "LMS Programs & Learning", icon: "fa-graduation-cap" },
+                { label: "Mentorship Hub", icon: "fa-user-group" },
+                { label: "Maternal Health Literacy", icon: "fa-heart-pulse" },
+                { label: "Policy Briefs & Governance", icon: "fa-file-shield" },
+                { label: "AdieTalk Radio & Media", icon: "fa-podcast" },
+                { label: "Donations & Tax Receipts", icon: "fa-hand-holding-dollar" }
+            ],
+            novatrix: [
+                { label: "Dashboard", icon: "fa-gauge-high", active: true },
+                { label: "4 Service Pillars", icon: "fa-cubes" },
+                { label: "Industry Solutions", icon: "fa-industry" },
+                { label: "Training Catalog & Cohorts", icon: "fa-laptop-code" },
+                { label: "Case Studies & Projects", icon: "fa-briefcase" },
+                { label: "Consultation Inquiries", icon: "fa-comments" },
+                { label: "Support Ticket Desk", icon: "fa-headset" }
+            ]
+        };
+
+        function renderSidebar() {
+            const menu = sidebarMenus[currentTenant] || sidebarMenus.master;
+            const menuEl = document.getElementById('sidebarMenu');
+            menuEl.innerHTML = '';
+
+            menu.forEach(item => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.className = `menu-item ${item.active ? 'active' : ''} ${currentTenant === 'tiipe' && item.active ? 'tiipe-active' : ''}`;
+                a.innerHTML = `<i class="fa-solid ${item.icon}"></i> <span>${item.label}</span>`;
+                a.onclick = () => {
+                    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active', 'tiipe-active'));
+                    a.classList.add('active');
+                    if (currentTenant === 'tiipe') a.classList.add('tiipe-active');
+                };
+                li.appendChild(a);
+                menuEl.appendChild(li);
+            });
+        }
 
         function toggleTenantDropdown() {
-            const menu = document.getElementById('tenantDropdownMenu');
-            menu.classList.toggle('show');
+            const list = document.getElementById('tenantMenuList');
+            list.classList.toggle('show');
         }
 
-        function selectTenant(tenantKey) {
+        function switchTenantView(tenantKey, tenantName, iconClass, iconColor, schemaName) {
             currentTenant = tenantKey;
-            document.getElementById('tenantDropdownMenu').classList.remove('show');
+            document.getElementById('tenantMenuList').classList.remove('show');
             
-            // Update labels
-            const headerLabel = document.getElementById('headerTenantLabel');
-            const schemaLabel = document.getElementById('headerActiveSchema');
-            const sidebarName = document.getElementById('sidebarTenantName');
-            const sidebarSchema = document.getElementById('sidebarTenantSchema');
-            const sidebarIcon = document.getElementById('sidebarTenantIcon');
+            // Update Top Bar
+            document.getElementById('currentTenantIcon').innerHTML = `<i class="fa-solid ${iconClass}" style="color:${iconColor};"></i>`;
+            document.getElementById('currentTenantName').textContent = tenantName;
+            document.getElementById('activeSchemaLabel').textContent = `active_schema: ${schemaName}`;
 
-            if (tenantKey === 'master') {
-                headerLabel.textContent = 'Master Overview (Global)';
-                schemaLabel.textContent = 'active_schema: public';
-                sidebarName.textContent = 'Master Overview';
-                sidebarSchema.textContent = 'active_schema: public';
-                sidebarIcon.innerHTML = '<i class="fas fa-globe"></i>';
-                switchView('master');
-            } else if (tenantKey === 'tiipe') {
-                headerLabel.textContent = 'TIIPE (Public Education)';
-                schemaLabel.textContent = 'active_schema: tiipe';
-                sidebarName.textContent = 'TIIPE Education';
-                sidebarSchema.textContent = 'active_schema: tiipe';
-                sidebarIcon.innerHTML = '<i class="fas fa-university" style="color: #FBBF24;"></i>';
-                switchView('tiipe');
+            // Update Sidebar Card
+            const sidebarBrandName = document.getElementById('sidebarBrandName');
+            const sidebarBrandIcon = document.getElementById('sidebarBrandIcon');
+            const sidebarSchemaText = document.getElementById('sidebarSchemaText');
+
+            sidebarBrandName.textContent = tenantName.split('(')[0].trim();
+            sidebarBrandIcon.className = `sidebar-brand-logo ${tenantKey}`;
+            sidebarBrandIcon.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            sidebarSchemaText.textContent = `active_schema: ${schemaName}`;
+
+            // Toggle Hub sections
+            if (tenantKey === 'tiipe') {
+                document.getElementById('tiipeHubSection').style.display = 'block';
+                document.getElementById('novatrixHubSection').style.display = 'none';
+                document.getElementById('mainDashboardTitle').textContent = 'TIIPE Educational Management Hub';
+                document.getElementById('mainDashboardSubtitle').textContent = 'Nonprofit governance, student mentorship, public health & 501(c)(3) tax receipts.';
             } else if (tenantKey === 'novatrix') {
-                headerLabel.textContent = 'Novatrix (Tech Services)';
-                schemaLabel.textContent = 'active_schema: novatrix';
-                sidebarName.textContent = 'Novatrix Tech';
-                sidebarSchema.textContent = 'active_schema: novatrix';
-                sidebarIcon.innerHTML = '<i class="fas fa-cubes" style="color: #38BDF8;"></i>';
-                switchView('novatrix');
-            }
-        }
-
-        function switchView(viewName) {
-            document.querySelectorAll('.tenant-view-container').forEach(el => el.classList.remove('active-view'));
-            
-            if (viewName === 'master') {
-                document.getElementById('masterView').classList.add('active-view');
-            } else if (viewName === 'tiipe') {
-                document.getElementById('tiipeView').classList.add('active-view');
-            } else if (viewName === 'novatrix') {
-                document.getElementById('novatrixView').classList.add('active-view');
-            } else if (viewName === 'files') {
-                document.getElementById('filesView').classList.add('active-view');
-            }
-
-            // Update sidebar active highlights
-            const navItems = document.querySelectorAll('#sidebarNavList .nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-            if (viewName === 'master') navItems[0].classList.add('active');
-            if (viewName === 'tiipe') navItems[1].classList.add('active');
-            if (viewName === 'novatrix') navItems[2].classList.add('active');
-            if (viewName === 'files') navItems[3].classList.add('active');
-        }
-
-        function openCreateModal(type) {
-            const modal = document.getElementById('createModal');
-            const title = document.getElementById('modalTitle');
-            if (type === 'program') {
-                title.textContent = 'Create New LMS Program (TIIPE)';
-                document.getElementById('modalTenantSelect').value = 'tiipe';
-            } else if (type === 'ticket') {
-                title.textContent = 'Create Client Support Ticket (Novatrix)';
-                document.getElementById('modalTenantSelect').value = 'novatrix';
+                document.getElementById('tiipeHubSection').style.display = 'none';
+                document.getElementById('novatrixHubSection').style.display = 'block';
+                document.getElementById('mainDashboardTitle').textContent = 'Novatrix Enterprise Services Hub';
+                document.getElementById('mainDashboardSubtitle').textContent = '4 service pillars, enterprise training cohorts, case studies & client support triage.';
             } else {
-                title.textContent = 'Create New Resource';
+                document.getElementById('tiipeHubSection').style.display = 'block';
+                document.getElementById('novatrixHubSection').style.display = 'block';
+                document.getElementById('mainDashboardTitle').textContent = 'Executive Master Dashboard';
+                document.getElementById('mainDashboardSubtitle').textContent = 'Cross-tenant performance overview, revenue streams, and real-time activity metrics.';
             }
-            modal.classList.add('show');
+
+            renderSidebar();
         }
 
-        function closeCreateModal() {
-            document.getElementById('createModal').classList.remove('show');
-        }
-
-        function submitCreateForm() {
-            const title = document.getElementById('modalInputTitle').value;
-            if (!title) {
-                alert('Please enter a title');
-                return;
+        // Close dropdown when clicking outside
+        window.onclick = function(e) {
+            if (!e.target.closest('.tenant-switcher-dropdown')) {
+                const list = document.getElementById('tenantMenuList');
+                if (list) list.classList.remove('show');
             }
-            alert('Item created successfully! Dispatched to PostgreSQL schema.');
-            closeCreateModal();
+        };
+
+        function initCharts() {
+            // Revenue & Donations Flow Line Chart
+            const ctxRev = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctxRev, {
+                type: 'line',
+                data: {
+                    labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    datasets: [
+                        {
+                            label: 'Course Revenue ($)',
+                            data: [15000, 22000, 28000, 24000, 31000, 32650],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            tension: 0.35,
+                            fill: true,
+                            borderWidth: 2
+                        },
+                        {
+                            label: '501(c)(3) Donations ($)',
+                            data: [28000, 35000, 31000, 42000, 45000, 48320],
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.08)',
+                            tension: 0.35,
+                            fill: true,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#64748b' } }
+                    }
+                }
+            });
+
+            // Activity Doughnut Chart
+            const ctxAct = document.getElementById('activityChart').getContext('2d');
+            activityChart = new Chart(ctxAct, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Courses (45%)', 'Mentorship (20%)', 'Radio (12%)', 'Donations (8%)', 'Support (15%)'],
+                    datasets: [{
+                        data: [45, 20, 12, 8, 15],
+                        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '72%'
+                }
+            });
         }
 
-        function copyJitsiLink() {
-            navigator.clipboard.writeText('https://meet.jit.si/tiipe-mentorship-482');
-            alert('Jitsi video meeting link copied to clipboard!');
-        }
-
-        function approveMentor() {
-            alert('Mentor application approved! Notification email and Jitsi calendar invite sent via SendGrid.');
-        }
-
-        async function testApiEndpoint(tenant, path) {
+        async function testApi(tenant, path) {
             try {
                 const res = await fetch(path, {
                     headers: { 'X-Tenant': tenant, 'Accept': 'application/json' }
                 });
                 const data = await res.json();
-                alert('Successfully fetched live data from ' + path + ' with X-Tenant: ' + tenant + ' (' + (data.results ? data.results.length : Object.keys(data).length) + ' items returned)');
+                alert(`API Response from ${path} [Tenant: ${tenant}]:\n` + JSON.stringify(data, null, 2).substring(0, 300) + '...');
             } catch (err) {
-                alert('API call error: ' + err.message);
+                alert(`API Call Error: ${err.message}`);
             }
         }
 
-        // Close dropdown when clicking outside
-        window.onclick = function(event) {
-            if (!event.target.closest('.tenant-selector')) {
-                document.getElementById('tenantDropdownMenu').classList.remove('show');
-            }
+        function openProgramModal() {
+            document.getElementById('createProgramModal').classList.add('active');
         }
+
+        function openPillarModal() {
+            alert('Novatrix Pillar Creator Modal');
+        }
+
+        function openCreateModal() {
+            openProgramModal();
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        function handleCreateProgram(e) {
+            e.preventDefault();
+            alert('Program created and synced to TIIPE schema!');
+            closeModals();
+        }
+
+        function refreshDashboardData() {
+            alert('Telemetry refreshed with live PostgreSQL schema metrics.');
+        }
+
+        function handleSearch(val) {
+            console.log("Searching for:", val);
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar();
+            initCharts();
+        });
     </script>
 </body>
 </html>
