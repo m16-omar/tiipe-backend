@@ -1,0 +1,336 @@
+{
+  "info": {
+    "name": "TIIPE & Novatrix Multi-Tenant REST API",
+    "description": "Comprehensive Postman API collection for TIIPE (Parent) and Novatrix (Subsidiary) multi-tenant backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tenant_header",
+      "value": "tiipe",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "{{tenant_header}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"learner@example.com\",\n  \"password\": \"SecurePass2026!\",\n  \"first_name\": \"Marcus\",\n  \"last_name\": \"Learner\",\n  \"phone\": \"+1 914-555-0144\",\n  \"role\": \"learner\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/register/", "host": ["{{base_url}}"], "path": ["auth", "register", ""] }
+          }
+        },
+        {
+          "name": "Login (JWT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.tokens && jsonData.tokens.access) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.tokens.access);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "{{tenant_header}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@impactinstituteglobal.org\",\n  \"password\": \"AdminPassword2026!\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login/", "host": ["{{base_url}}"], "path": ["auth", "login", ""] }
+          }
+        },
+        {
+          "name": "Get Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-Tenant", "value": "{{tenant_header}}" }
+            ],
+            "url": { "raw": "{{base_url}}/auth/me/", "host": ["{{base_url}}"], "path": ["auth", "me", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. CMS (Dynamic Content)",
+      "item": [
+        {
+          "name": "Get Hero Sections",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "{{tenant_header}}" }],
+            "url": { "raw": "{{base_url}}/cms/heroes/", "host": ["{{base_url}}"], "path": ["cms", "heroes", ""] }
+          }
+        },
+        {
+          "name": "Get Navigation Menus",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "{{tenant_header}}" }],
+            "url": { "raw": "{{base_url}}/cms/navigation/", "host": ["{{base_url}}"], "path": ["cms", "navigation", ""] }
+          }
+        },
+        {
+          "name": "Get Governance Documents (TIIPE)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "tiipe" }],
+            "url": { "raw": "{{base_url}}/cms/governance-documents/", "host": ["{{base_url}}"], "path": ["cms", "governance-documents", ""] }
+          }
+        },
+        {
+          "name": "Get Board Members",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "{{tenant_header}}" }],
+            "url": { "raw": "{{base_url}}/cms/board-members/", "host": ["{{base_url}}"], "path": ["cms", "board-members", ""] }
+          }
+        },
+        {
+          "name": "Get Media Broadcasts (AdieTalk Radio)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "tiipe" }],
+            "url": { "raw": "{{base_url}}/cms/media-broadcasts/", "host": ["{{base_url}}"], "path": ["cms", "media-broadcasts", ""] }
+          }
+        },
+        {
+          "name": "Get Impact Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "{{tenant_header}}" }],
+            "url": { "raw": "{{base_url}}/cms/impact-metrics/", "host": ["{{base_url}}"], "path": ["cms", "impact-metrics", ""] }
+          }
+        },
+        {
+          "name": "Get Articles & Insights",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "{{tenant_header}}" }],
+            "url": { "raw": "{{base_url}}/cms/articles/", "host": ["{{base_url}}"], "path": ["cms", "articles", ""] }
+          }
+        },
+        {
+          "name": "Submit Contact Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "{{tenant_header}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"phone\": \"+1 555-0199\",\n  \"subject\": \"General Inquiry\",\n  \"message\": \"Interested in collaborating with your programs.\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/cms/contact/", "host": ["{{base_url}}"], "path": ["cms", "contact", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. TIIPE LMS & Mentorship",
+      "item": [
+        {
+          "name": "List Educational Programs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "tiipe" }],
+            "url": { "raw": "{{base_url}}/lms/programs/", "host": ["{{base_url}}"], "path": ["lms", "programs", ""] }
+          }
+        },
+        {
+          "name": "Submit Mentor Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-Tenant", "value": "tiipe" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"areas_of_expertise\": \"Mathematics & Python\",\n  \"highest_qualification\": \"B.Sc. Computer Science\",\n  \"current_employer_or_school\": \"Tech Corp\",\n  \"weekly_availability_hours\": 4\n}"
+            },
+            "url": { "raw": "{{base_url}}/lms/mentor-applications/", "host": ["{{base_url}}"], "path": ["lms", "mentor-applications", ""] }
+          }
+        },
+        {
+          "name": "Request Mentorship Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-Tenant", "value": "tiipe" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mentor\": 1,\n  \"subject_topic\": \"Algebra 1 Problem Set\",\n  \"start_time\": \"2026-10-15T18:00:00Z\",\n  \"end_time\": \"2026-10-15T19:00:00Z\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/lms/sessions/", "host": ["{{base_url}}"], "path": ["lms", "sessions", ""] }
+          }
+        },
+        {
+          "name": "List Public Health Resources",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "tiipe" }],
+            "url": { "raw": "{{base_url}}/lms/health-resources/", "host": ["{{base_url}}"], "path": ["lms", "health-resources", ""] }
+          }
+        },
+        {
+          "name": "List Policy Briefs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "tiipe" }],
+            "url": { "raw": "{{base_url}}/lms/policy-briefs/", "host": ["{{base_url}}"], "path": ["lms", "policy-briefs", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Novatrix Services & Projects",
+      "item": [
+        {
+          "name": "List 4 Service Pillars",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "novatrix" }],
+            "url": { "raw": "{{base_url}}/services/pillars/", "host": ["{{base_url}}"], "path": ["services", "pillars", ""] }
+          }
+        },
+        {
+          "name": "List Industry Solutions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "novatrix" }],
+            "url": { "raw": "{{base_url}}/services/industries/", "host": ["{{base_url}}"], "path": ["services", "industries", ""] }
+          }
+        },
+        {
+          "name": "List Project Case Studies",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "novatrix" }],
+            "url": { "raw": "{{base_url}}/services/case-studies/", "host": ["{{base_url}}"], "path": ["services", "case-studies", ""] }
+          }
+        },
+        {
+          "name": "List Training Catalog Courses",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "X-Tenant", "value": "novatrix" }],
+            "url": { "raw": "{{base_url}}/services/courses/", "host": ["{{base_url}}"], "path": ["services", "courses", ""] }
+          }
+        },
+        {
+          "name": "Submit Project Consultation Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "novatrix" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_name\": \"Amina Bello\",\n  \"organization\": \"Fintech Solutions Ltd\",\n  \"email\": \"amina@fintech.com\",\n  \"phone_or_whatsapp\": \"+234 801 234 5678\",\n  \"service_required\": \"custom_software\",\n  \"project_description\": \"Need a custom loan management dashboard and mobile app for field officers.\",\n  \"desired_timeline\": \"1_to_3_months\",\n  \"budget_range\": \"15k_to_50k\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/services/project-inquiries/", "host": ["{{base_url}}"], "path": ["services", "project-inquiries", ""] }
+          }
+        },
+        {
+          "name": "Submit Training Inquiry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "novatrix" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inquirer_type\": \"corporate\",\n  \"inquirer_name\": \"Grace Okon\",\n  \"organization\": \"Sterling Health\",\n  \"email\": \"grace@sterling.com\",\n  \"phone_or_whatsapp\": \"+234 809 111 2233\",\n  \"training_topic_custom\": \"Data Analytics with Python and PowerBI for 15 medical analysts\",\n  \"participant_count\": 15,\n  \"desired_outcome\": \"Upskill internal analytics team for clinical report generation.\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/services/training-inquiries/", "host": ["{{base_url}}"], "path": ["services", "training-inquiries", ""] }
+          }
+        },
+        {
+          "name": "Submit Support Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "novatrix" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"client_name\": \"Michael Ade\",\n  \"organization\": \"Logistics Pro\",\n  \"email\": \"michael@logistics.com\",\n  \"service_type\": \"bug_incident\",\n  \"urgency\": \"high\",\n  \"affected_system\": \"Logistics Pro Dispatch API\",\n  \"issue_description\": \"Webhook notifications failing to sync delivery status.\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/services/support-tickets/", "host": ["{{base_url}}"], "path": ["services", "support-tickets", ""] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Payments & Donations",
+      "item": [
+        {
+          "name": "Process 501(c)(3) Donation (TIIPE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Tenant", "value": "tiipe" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"donor_name\": \"Helen Donor\",\n  \"donor_email\": \"helen@business.com\",\n  \"donor_address\": \"100 Main St, New Rochelle, NY 10801\",\n  \"amount\": \"100.00\",\n  \"frequency\": \"monthly\",\n  \"fund_allocation\": \"education_tutoring\",\n  \"gateway\": \"stripe\",\n  \"transaction_reference\": \"ch_test_123456789\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/payments/donations/", "host": ["{{base_url}}"], "path": ["payments", "donations", ""] }
+          }
+        },
+        {
+          "name": "List User Invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-Tenant", "value": "{{tenant_header}}" }
+            ],
+            "url": { "raw": "{{base_url}}/payments/invoices/", "host": ["{{base_url}}"], "path": ["payments", "invoices", ""] }
+          }
+        }
+      ]
+    }
+  ]
+}
