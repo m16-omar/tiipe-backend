@@ -19,6 +19,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 SHARED_APPS = [
     'django_tenants',  # Must be first
     'apps.core',       # Contains ClientTenant and Domain models
+    'jazzmin',         # Modern Django Admin theme (must precede django.contrib.admin)
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -225,6 +226,100 @@ SPECTACULAR_SETTINGS = {
         'persistAuthorization': True,
         'displayOperationId': True,
     },
+}
+
+# ==============================================================================
+# JAZZMIN MODERN ADMIN THEME CONFIGURATION
+# ==============================================================================
+
+JAZZMIN_SETTINGS = {
+    "site_title": "TIIPE & Novatrix Master Admin",
+    "site_header": "TIIPE / Novatrix Admin",
+    "site_brand": "TIIPE & Novatrix",
+    "welcome_sign": "Welcome to the Unified Multi-Tenant Management Portal",
+    "copyright": "TIIPE & Novatrix Unified Master Systems",
+    "search_model": ["users.CustomUser", "core.ClientTenant"],
+    "user_avatar": None,
+    "topmenu_links": [
+        {"name": "Master Dashboard", "url": "public-api-root", "permissions": ["auth.view_user"]},
+        {"name": "Swagger UI", "url": "/api/docs/", "new_window": True},
+        {"name": "ReDoc", "url": "/api/redoc/", "new_window": True},
+        {"name": "Health Telemetry", "url": "/health/", "new_window": True},
+    ],
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "users.CustomUser": "fas fa-user-shield",
+        "users.UserProfile": "fas fa-id-badge",
+        "users.TenantMembership": "fas fa-user-tag",
+        "core.ClientTenant": "fas fa-building",
+        "core.Domain": "fas fa-globe",
+        "cms.HeroSection": "fas fa-tv",
+        "cms.GovernanceDocument": "fas fa-file-contract",
+        "cms.BoardMember": "fas fa-user-tie",
+        "cms.MediaBroadcast": "fas fa-podcast",
+        "cms.Webinar": "fas fa-video",
+        "cms.ImpactMetric": "fas fa-chart-line",
+        "cms.Article": "fas fa-newspaper",
+        "cms.FAQ": "fas fa-question-circle",
+        "tiipe_lms.Program": "fas fa-graduation-cap",
+        "tiipe_lms.MentorApplication": "fas fa-user-graduate",
+        "tiipe_lms.MentorshipSession": "fas fa-chalkboard-teacher",
+        "tiipe_lms.LearningModule": "fas fa-book-reader",
+        "tiipe_lms.PublicHealthResource": "fas fa-heartbeat",
+        "tiipe_lms.PolicyBrief": "fas fa-file-alt",
+        "novatrix_services.ServicePillar": "fas fa-cubes",
+        "novatrix_services.IndustrySolution": "fas fa-industry",
+        "novatrix_services.ProjectCaseStudy": "fas fa-briefcase",
+        "novatrix_services.TrainingCourse": "fas fa-laptop-code",
+        "novatrix_services.ProjectInquiry": "fas fa-comments",
+        "novatrix_services.SupportTicket": "fas fa-headset",
+        "payments.Donation": "fas fa-hand-holding-usd",
+        "payments.PaymentTransaction": "fas fa-receipt",
+        "payments.Invoice": "fas fa-file-invoice-dollar",
+        "notifications.PushDeviceToken": "fas fa-mobile-alt",
+        "notifications.NotificationLog": "fas fa-bell",
+        "files.MediaAsset": "fas fa-photo-video",
+        "files.DocumentUpload": "fas fa-folder-open",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "changeform_format": "horizontal_tabs",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark navbar-navy",
+    "no_navbar_border": False,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "darkly",
+    "dark_mode_theme": "darkly",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
 
 # ==============================================================================

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIIPE & Novatrix — Multi-Tenant Enterprise Backend Gateway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #090d16;
+            --bg-card: rgba(18, 26, 43, 0.75);
+            --bg-card-hover: rgba(28, 40, 65, 0.85);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-glow: rgba(37, 99, 235, 0.3);
+            --tiipe-primary: #1e3a8a;
+            --tiipe-accent: #d97706;
+            --tiipe-green: #059669;
+            --novatrix-primary: #163a5f;
+            --novatrix-blue: #2563eb;
+            --novatrix-cyan: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(30, 58, 138, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(37, 99, 235, 0.2) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(217, 119, 6, 0.12) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        /* Top Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: rgba(9, 13, 22, 0.8);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logos {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .badge-pill {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        .pill-parent {
+            background: rgba(217, 119, 6, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(217, 119, 6, 0.4);
+        }
+
+        .pill-sub {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.4);
+        }
+
+        .divider-slash {
+            color: var(--text-dim);
+            font-size: 1.2rem;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.15rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            transform: translateY(-1px);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+        }
+        .btn-admin:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        .status-beacon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .beacon-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        /* Hero */
+        .hero-banner {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            max-width: 780px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Metric Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-dim);
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .stat-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .stat-subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        /* Brand Grid */
+        .brand-section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .brands-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .brand-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .panel-tiipe {
+            border-top: 4px solid var(--tiipe-accent);
+        }
+        .panel-novatrix {
+            border-top: 4px solid var(--novatrix-blue);
+        }
+
+        .panel-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .panel-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+
+        .panel-tagline {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .domain-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.3rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #93c5fd;
+            font-family: monospace;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .domain-tag:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .feature-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.8rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            color: var(--text-muted);
+        }
+
+        .panel-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        /* Interactive API Console */
+        .console-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 2rem;
+            margin-bottom: 3.5rem;
+        }
+
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .console-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .select-input {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            cursor: pointer;
+        }
+        .select-input:focus {
+            border-color: var(--novatrix-blue);
+        }
+
+        .output-box {
+            background: #060911;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 1.25rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #38bdf8;
+            max-height: 380px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="brand-logos">
+            <a href="/" class="brand-badge">
+                <span>TIIPE</span>
+                <span class="badge-pill pill-parent">Parent Brand</span>
+            </a>
+            <span class="divider-slash">/</span>
+            <a href="/" class="brand-badge">
+                <span>Novatrix</span>
+                <span class="badge-pill pill-sub">Subsidiary</span>
+            </a>
+        </div>
+
+        <div class="nav-actions">
+            <div class="status-beacon">
+                <span class="beacon-dot"></span>
+                <span>PostgreSQL Multi-Schema Active</span>
+            </div>
+            <a href="/admin/" class="btn btn-admin">🛡️ Django Admin</a>
+            <a href="/api/docs/" class="btn btn-primary">📖 Swagger Docs</a>
+            <a href="/api/redoc/" class="btn btn-outline">📜 ReDoc</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+        <!-- Hero Section -->
+        <section class="hero-banner">
+            <h1 class="hero-title">TIIPE & Novatrix Unified Gateway</h1>
+            <p class="hero-subtitle">
+                A high-performance Django 5.1 REST API backend powering 
+                <strong>impactinstituteglobal.org</strong>, <strong>thenovatrix.com</strong>, and cross-platform <strong>iOS & Android</strong> mobile applications.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="/api/docs/" class="btn btn-primary">🚀 Launch Interactive Swagger UI</a>
+                <a href="/admin/" class="btn btn-admin">🔐 Enter Master Admin Portal</a>
+                <a href="/health/" class="btn btn-outline">💚 Health Telemetry</a>
+            </div>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Multi-Tenancy</div>
+                <div class="stat-value">PostgreSQL Schemas</div>
+                <div class="stat-subtext">Isolated schemas for <code>tiipe</code> & <code>novatrix</code></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Authentication</div>
+                <div class="stat-value">SimpleJWT + SSO</div>
+                <div class="stat-subtext">Shared Global User table with Tenant Role Mapping</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Background Queue</div>
+                <div class="stat-value">Celery 5.4 + Redis</div>
+                <div class="stat-subtext">Async transactional emails & push dispatch</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Storage Engine</div>
+                <div class="stat-value">S3 / Spaces Scoped</div>
+                <div class="stat-subtext">Dynamic tenant prefixing for media assets</div>
+            </div>
+        </section>
+
+        <!-- Dual Brand Panels -->
+        <section>
+            <h2 class="brand-section-title">🏢 Tenant Schema Directory & Capabilities</h2>
+            <div class="brands-grid">
+                
+                <!-- TIIPE Card -->
+                <div class="brand-panel panel-tiipe">
+                    <div>
+                        <div class="panel-header">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <h3 class="panel-title">The Impact Institute for Public Education</h3>
+                                <span class="badge-pill pill-parent">Schema: tiipe</span>
+                            </div>
+                            <p class="panel-tagline">"Transforming knowledge into lasting social impact."</p>
+                            <a href="https://impactinstituteglobal.org" target="_blank" class="domain-tag">🌐 impactinstituteglobal.org</a>
+                        </div>
+
+                        <div class="feature-chips">
+                            <span class="chip">📚 Academic Tutoring & Mentorship</span>
+                            <span class="chip">🏛️ 501(c)(3) Governance Center</span>
+                            <span class="chip">💳 Program-Targeted Stripe Donations</span>
+                            <span class="chip">🎙️ AdieTalk Radio & Media Hub</span>
+                            <span class="chip">🏥 Maternal Health Literacy</span>
+                            <span class="chip">📑 Open-Access Policy Briefs</span>
+                        </div>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button onclick="testApi('tiipe', '/api/v1/lms/programs/')" class="btn btn-outline">Test Programs API</button>
+                        <button onclick="testApi('tiipe', '/api/v1/cms/governance-documents/')" class="btn btn-outline">Test Governance Docs</button>
+                        <button onclick="testApi('tiipe', '/api/v1/cms/media-broadcasts/')" class="btn btn-outline">Test AdieTalk Radio</button>
+                    </div>
+                </div>
+
+                <!-- Novatrix Card -->
+                <div class="brand-panel panel-novatrix">
+                    <div>
+                        <div class="panel-header">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <h3 class="panel-title">Novatrix Technology & Workforce</h3>
+                                <span class="badge-pill pill-sub">Schema: novatrix</span>
+                            </div>
+                            <p class="panel-tagline">"Software that works. Systems that scale. Training that lasts."</p>
+                            <a href="https://thenovatrix.com" target="_blank" class="domain-tag">🌐 thenovatrix.com</a>
+                        </div>
+
+                        <div class="feature-chips">
+                            <span class="chip">💻 Custom Software Development</span>
+                            <span class="chip">⚙️ System Implementation & Integration</span>
+                            <span class="chip">🎓 Workforce Training Catalog ($150-$400)</span>
+                            <span class="chip">📁 Project Case Studies & Blueprints</span>
+                            <span class="chip">📋 Structured Project Consultation</span>
+                            <span class="chip">🎫 Client Technical Support Intake</span>
+                        </div>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button onclick="testApi('novatrix', '/api/v1/services/pillars/')" class="btn btn-outline">Test 4 Pillars API</button>
+                        <button onclick="testApi('novatrix', '/api/v1/services/courses/')" class="btn btn-outline">Test Training Courses</button>
+                        <button onclick="testApi('novatrix', '/api/v1/services/case-studies/')" class="btn btn-outline">Test Case Studies</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Live Interactive Sandbox -->
+        <section class="console-section">
+            <div class="console-header">
+                <div>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.3rem; margin-bottom: 0.25rem;">🧪 Live Multi-Tenant API Sandbox</h3>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Test header-driven tenant resolution right from your browser.</p>
+                </div>
+
+                <div class="console-controls">
+                    <select id="tenantSelect" class="select-input" onchange="updateEndpoints()">
+                        <option value="tiipe">Tenant: TIIPE (impactinstituteglobal.org)</option>
+                        <option value="novatrix">Tenant: Novatrix (thenovatrix.com)</option>
+                    </select>
+
+                    <select id="endpointSelect" class="select-input">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+
+                    <button onclick="executeSelectedApi()" class="btn btn-primary">⚡ Send Request</button>
+                </div>
+            </div>
+
+            <div id="apiOutput" class="output-box">// Click 'Send Request' or one of the test buttons above to inspect live JSON responses.</div>
+        </section>
+
+        <!-- Quick Credentials & Reference -->
+        <section style="background: rgba(255,255,255,0.02); border: 1px dashed var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <strong style="color: #fbbf24;">🔑 Master Admin Credentials:</strong>
+                <span style="color: var(--text-muted); margin-left: 0.5rem;">Username: <code>admin@impactinstituteglobal.org</code> | Password: <code>AdminPassword2026!</code></span>
+            </div>
+            <div>
+                <a href="/admin/" class="btn btn-admin" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;">Login to Admin &rarr;</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>TIIPE & Novatrix Multi-Tenant Architecture &bull; Built with Django 5.1 & Django REST Framework &bull; Version 1.0.0</p>
+        </footer>
+
+    </main>
+
+    <script>
+        const endpoints = {
+            tiipe: [
+                { label: "Core Initiatives (/lms/programs/)", path: "/api/v1/lms/programs/" },
+                { label: "Hero Banners (/cms/heroes/)", path: "/api/v1/cms/heroes/" },
+                { label: "Governance Documents (/cms/governance-documents/)", path: "/api/v1/cms/governance-documents/" },
+                { label: "Board Members (/cms/board-members/)", path: "/api/v1/cms/board-members/" },
+                { label: "Impact Metrics (/cms/impact-metrics/)", path: "/api/v1/cms/impact-metrics/" },
+                { label: "AdieTalk Radio Broadcasts (/cms/media-broadcasts/)", path: "/api/v1/cms/media-broadcasts/" },
+                { label: "Public Health Literacy (/lms/health-resources/)", path: "/api/v1/lms/health-resources/" },
+                { label: "Open-Access Policy Briefs (/lms/policy-briefs/)", path: "/api/v1/lms/policy-briefs/" }
+            ],
+            novatrix: [
+                { label: "4 Service Pillars (/services/pillars/)", path: "/api/v1/services/pillars/" },
+                { label: "Training Catalog Courses (/services/courses/)", path: "/api/v1/services/courses/" },
+                { label: "Training Cohorts (/services/cohorts/)", path: "/api/v1/services/cohorts/" },
+                { label: "Industry Solutions (/services/industries/)", path: "/api/v1/services/industries/" },
+                { label: "Project Case Studies (/services/case-studies/)", path: "/api/v1/services/case-studies/" },
+                { label: "Hero Banners (/cms/heroes/)", path: "/api/v1/cms/heroes/" },
+                { label: "Capability Downloads (/services/downloads/)", path: "/api/v1/services/downloads/" }
+            ]
+        };
+
+        function updateEndpoints() {
+            const tenant = document.getElementById('tenantSelect').value;
+            const select = document.getElementById('endpointSelect');
+            select.innerHTML = '';
+            endpoints[tenant].forEach(ep => {
+                const opt = document.createElement('option');
+                opt.value = ep.path;
+                opt.textContent = ep.label;
+                select.appendChild(opt);
+            });
+        }
+
+        async function testApi(tenant, path) {
+            document.getElementById('tenantSelect').value = tenant;
+            updateEndpoints();
+            document.getElementById('endpointSelect').value = path;
+            await executeSelectedApi();
+        }
+
+        async function executeSelectedApi() {
+            const tenant = document.getElementById('tenantSelect').value;
+            const path = document.getElementById('endpointSelect').value;
+            const output = document.getElementById('apiOutput');
+            output.textContent = "Fetching " + path + " with X-Tenant: " + tenant + "...";
+
+            try {
+                const res = await fetch(path, {
+                    headers: {
+                        'X-Tenant': tenant,
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await res.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.textContent = "Error executing request: " + err.message;
+            }
+        }
+
+        // Initialize on load
+        updateEndpoints();
+    </script>
+</body>
+</html>
