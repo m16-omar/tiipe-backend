@@ -31,6 +31,16 @@ def tenant_api_root(request):
         }
     })
 
+def tenant_health_check(request):
+    tenant = getattr(request, 'tenant', None)
+    return JsonResponse({
+        'status': 'healthy',
+        'tenant_schema': getattr(tenant, 'schema_name', 'unknown'),
+        'tenant_name': getattr(tenant, 'name', 'unknown'),
+        'brand': getattr(tenant, 'brand_type', 'unknown'),
+        'version': '1.0.0'
+    })
+
 urlpatterns = [
     path('', tenant_api_root, name='tenant-api-root'),
     path('admin/', admin.site.urls),
