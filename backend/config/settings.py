@@ -145,6 +145,7 @@ TEMPLATES = [
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
@@ -236,12 +237,12 @@ JAZZMIN_SETTINGS = {
     "site_title": "TIIPE & Novatrix Master Admin",
     "site_header": "TIIPE / Novatrix Admin",
     "site_brand": "TIIPE & Novatrix",
-    "welcome_sign": "Welcome to the Unified Multi-Tenant Management Portal",
+    "welcome_sign": "Unified Multi-Tenant Management Portal",
     "copyright": "TIIPE & Novatrix Unified Master Systems",
-    "search_model": ["users.CustomUser", "core.ClientTenant"],
+    "search_model": ["users.CustomUser", "core.ClientTenant", "tiipe_lms.Program", "novatrix_services.ServicePillar"],
     "user_avatar": None,
     "topmenu_links": [
-        {"name": "Master Dashboard", "url": "public-api-root", "permissions": ["auth.view_user"]},
+        {"name": "Master Dashboard", "url": "/", "permissions": ["auth.view_user"]},
         {"name": "Swagger UI", "url": "/api/docs/", "new_window": True},
         {"name": "ReDoc", "url": "/api/redoc/", "new_window": True},
         {"name": "Health Telemetry", "url": "/health/", "new_window": True},
@@ -250,44 +251,92 @@ JAZZMIN_SETTINGS = {
     "navigation_expanded": True,
     "hide_apps": [],
     "hide_models": [],
+    "order_with_respect_to": [
+        "core",
+        "users",
+        "tiipe_lms",
+        "novatrix_services",
+        "cms",
+        "payments",
+        "notifications",
+        "files",
+        "auth",
+    ],
+    "custom_links": {
+        "core": [{
+            "name": "Live API Swagger UI",
+            "url": "/api/docs/",
+            "icon": "fas fa-code",
+            "permissions": ["core.view_clienttenant"]
+        }, {
+            "name": "Live ReDoc Specs",
+            "url": "/api/redoc/",
+            "icon": "fas fa-book",
+            "permissions": ["core.view_clienttenant"]
+        }, {
+            "name": "Public Master Gateway",
+            "url": "/",
+            "icon": "fas fa-network-wired",
+            "permissions": ["core.view_clienttenant"]
+        }]
+    },
+    "custom_css": "css/custom_admin.css",
+    "custom_js": "js/custom_admin.js",
     "icons": {
         "auth": "fas fa-users-cog",
+        "auth.Group": "fas fa-user-friends",
         "users.CustomUser": "fas fa-user-shield",
         "users.UserProfile": "fas fa-id-badge",
         "users.TenantMembership": "fas fa-user-tag",
         "core.ClientTenant": "fas fa-building",
         "core.Domain": "fas fa-globe",
         "cms.HeroSection": "fas fa-tv",
+        "cms.NavigationMenu": "fas fa-bars",
         "cms.GovernanceDocument": "fas fa-file-contract",
         "cms.BoardMember": "fas fa-user-tie",
         "cms.MediaBroadcast": "fas fa-podcast",
         "cms.Webinar": "fas fa-video",
         "cms.ImpactMetric": "fas fa-chart-line",
+        "cms.PublicBenefitStatement": "fas fa-award",
+        "cms.ArticleCategory": "fas fa-tags",
         "cms.Article": "fas fa-newspaper",
         "cms.FAQ": "fas fa-question-circle",
+        "cms.Testimonial": "fas fa-comment-dots",
+        "cms.ContactMessage": "fas fa-envelope-open-text",
+        "cms.EventNotice": "fas fa-calendar-alt",
         "tiipe_lms.Program": "fas fa-graduation-cap",
         "tiipe_lms.MentorApplication": "fas fa-user-graduate",
+        "tiipe_lms.MentorAvailability": "fas fa-clock",
         "tiipe_lms.MentorshipSession": "fas fa-chalkboard-teacher",
         "tiipe_lms.LearningModule": "fas fa-book-reader",
+        "tiipe_lms.Lesson": "fas fa-list-ol",
+        "tiipe_lms.LearnerProgress": "fas fa-tasks",
         "tiipe_lms.PublicHealthResource": "fas fa-heartbeat",
         "tiipe_lms.PolicyBrief": "fas fa-file-alt",
         "novatrix_services.ServicePillar": "fas fa-cubes",
         "novatrix_services.IndustrySolution": "fas fa-industry",
         "novatrix_services.ProjectCaseStudy": "fas fa-briefcase",
         "novatrix_services.TrainingCourse": "fas fa-laptop-code",
+        "novatrix_services.TrainingCohort": "fas fa-users-class",
         "novatrix_services.ProjectInquiry": "fas fa-comments",
+        "novatrix_services.TrainingInquiry": "fas fa-user-check",
         "novatrix_services.SupportTicket": "fas fa-headset",
+        "novatrix_services.CapabilityDownload": "fas fa-cloud-download-alt",
         "payments.Donation": "fas fa-hand-holding-usd",
+        "payments.DonationAllocation": "fas fa-donate",
         "payments.PaymentTransaction": "fas fa-receipt",
         "payments.Invoice": "fas fa-file-invoice-dollar",
+        "payments.WebhookLog": "fas fa-exchange-alt",
         "notifications.PushDeviceToken": "fas fa-mobile-alt",
         "notifications.NotificationLog": "fas fa-bell",
+        "notifications.EmailTemplate": "fas fa-mail-bulk",
         "files.MediaAsset": "fas fa-photo-video",
         "files.DocumentUpload": "fas fa-folder-open",
     },
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
     "changeform_format": "horizontal_tabs",
+    "related_modal_active": True,
 }
 
 JAZZMIN_UI_TWEAKS = {

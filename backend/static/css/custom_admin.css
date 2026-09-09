@@ -1,0 +1,269 @@
+/* ==============================================================================
+   TIIPE & NOVATRIX MASTER JAZZMIN ADMIN STYLESHEET
+   ============================================================================== */
+
+:root {
+    --bg-dark: #090d16;
+    --bg-card: #121a2b;
+    --bg-card-hover: #19233a;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --tiipe-gold: #d97706;
+    --tiipe-gold-light: #fbbf24;
+    --tiipe-navy: #1e3a8a;
+    --novatrix-blue: #2563eb;
+    --novatrix-cyan: #0284c7;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+/* Main Navbar & Brand */
+.main-header.navbar {
+    border-bottom: 1px solid var(--border-color) !important;
+    background: rgba(9, 13, 22, 0.95) !important;
+    backdrop-filter: blur(12px);
+}
+
+.brand-link {
+    border-bottom: 1px solid var(--border-color) !important;
+    background: #090d16 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+.brand-link .brand-text {
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Sidebar Custom Styling */
+.main-sidebar {
+    background-color: #0c121e !important;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar .nav-header {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #64748b !important;
+    font-weight: 700;
+    padding-top: 1rem;
+    padding-bottom: 0.35rem;
+}
+
+.sidebar .nav-link {
+    border-radius: 6px;
+    margin: 2px 8px;
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    color: #fff !important;
+}
+
+.sidebar .nav-link.active {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Custom Admin Dashboard Cards */
+.admin-hero-banner {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.35) 0%, rgba(37, 99, 235, 0.2) 50%, rgba(217, 119, 6, 0.15) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-hero-banner::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.tenant-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pill-tiipe {
+    background: rgba(217, 119, 6, 0.15);
+    color: var(--tiipe-gold-light);
+    border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.pill-novatrix {
+    background: rgba(37, 99, 235, 0.15);
+    color: #93c5fd;
+    border: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+.pill-master {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* Stat Cards */
+.admin-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-stat-card:hover {
+    border-color: rgba(37, 99, 235, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.admin-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+}
+
+.icon-tiipe {
+    background: rgba(217, 119, 6, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.icon-novatrix {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+.icon-users {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.icon-system {
+    background: rgba(139, 92, 246, 0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Brand Hub Section Cards */
+.brand-hub-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.brand-hub-card .card-header {
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+}
+
+.header-tiipe {
+    border-left: 4px solid var(--tiipe-gold) !important;
+}
+
+.header-novatrix {
+    border-left: 4px solid var(--novatrix-blue) !important;
+}
+
+.header-system {
+    border-left: 4px solid #10b981 !important;
+}
+
+.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-tiipe-action {
+    background: rgba(217, 119, 6, 0.15);
+    border: 1px solid rgba(217, 119, 6, 0.4);
+    color: #fbbf24 !important;
+}
+.btn-tiipe-action:hover {
+    background: rgba(217, 119, 6, 0.3);
+    color: #fff !important;
+}
+
+.btn-novatrix-action {
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.4);
+    color: #93c5fd !important;
+}
+.btn-novatrix-action:hover {
+    background: rgba(37, 99, 235, 0.3);
+    color: #fff !important;
+}
+
+/* Table Enhancements */
+.card .table {
+    margin-bottom: 0;
+}
+
+.card .table td, .card .table th {
+    border-top: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+.card .table tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
