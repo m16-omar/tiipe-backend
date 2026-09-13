@@ -1,544 +1,274 @@
-{% extends "admin/base_site.html" %}
-{% load i18n static jazzmin %}
-{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+{% extends "unfold/layouts/base.html" %}
+{% load i18n unfold %}
 
-{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block content_title %}
-    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <h1 class="m-0 text-dark" style="font-weight: 700; font-size: 1.6rem; letter-spacing: -0.02em;">
-                TIIPE & Novatrix Unified Master Control Center
-            </h1>
-            <p class="text-muted m-0" style="font-size: 0.9rem;">
-                Multi-Tenant Enterprise Administration & Operations Hub
-            </p>
-        </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-            <a href="/" target="_blank" class="btn btn-sm btn-outline-light">
-                <i class="fas fa-external-link-alt mr-1"></i> Public Gateway
-            </a>
-            <a href="/api/docs/" target="_blank" class="btn btn-sm btn-primary">
-                <i class="fas fa-code mr-1"></i> Swagger UI
-            </a>
-            <a href="/health/" target="_blank" class="btn btn-sm btn-info">
-                <i class="fas fa-heartbeat mr-1"></i> Health Telemetry
-            </a>
-        </div>
-    </div>
-{% endblock %}
-
-{% block breadcrumbs %}
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
-        <li class="breadcrumb-item active">Master Executive Dashboard</li>
-    </ol>
-{% endblock %}
+{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-    <!-- Hero Banner -->
-    <div class="admin-hero-banner">
-        <div class="row align-items-center">
-            <div class="col-lg-8 col-12">
-                <div style="display: flex; gap: 0.6rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
-                    <span class="tenant-badge-pill pill-master">
-                        <i class="fas fa-database"></i> PostgreSQL Multi-Schema Active
+<div class="space-y-8">
+  <!-- Top Executive Header Banner -->
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 p-6 md:p-8 text-white border border-slate-800 shadow-xl">
+    <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-300 border border-blue-500/30">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            PostgreSQL Multi-Schema Active
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            TIIPE LMS (Parent)
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            Novatrix Tech (Subsidiary)
+          </span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-white">
+          TIIPE & Novatrix Unified Master Control Center
+        </h1>
+        <p class="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed">
+          Oversee multi-tenant schemas, 501(c)(3) donations, verified tutoring sessions, custom software inquiries, and global identities in real-time.
+        </p>
+      </div>
+
+      <!-- Quick External Links -->
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition shadow-sm">
+          <span class="material-symbols-outlined text-sm">language</span>
+          Public Gateway
+        </a>
+        <a href="/api/docs/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition shadow-sm">
+          <span class="material-symbols-outlined text-sm">code</span>
+          Swagger UI
+        </a>
+        <a href="/health/" target="_blank" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white transition shadow-sm">
+          <span class="material-symbols-outlined text-sm">monitor_heart</span>
+          Telemetry
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <!-- Card 1: Users & Identity -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Global Identities</span>
+        <div class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">people</span>
+        </div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ total_users|default:"1" }}</div>
+        <div class="text-xs text-slate-500 flex items-center gap-2 mt-1">
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">{{ total_mentors|default:"0" }} Verified Tutors</span>
+          <span>•</span>
+          <span>{{ active_tenants|default:"2" }} Active Tenants</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: 501(c)(3) Donations -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">501(c)(3) Donations</span>
+        <div class="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">volunteer_activism</span>
+        </div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          ${{ tiipe_stats.total_donated|floatformat:2|default:"0.00" }}
+        </div>
+        <div class="text-xs text-slate-500 flex items-center gap-2 mt-1">
+          <span>{{ tiipe_stats.donations_count|default:"0" }} total contributions</span>
+          <span>•</span>
+          <span class="text-blue-500">Tax Deductible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Mentorship & Tutoring -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">TIIPE Tutoring MVP</span>
+        <div class="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">school</span>
+        </div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ tiipe_stats.sessions_count|default:"0" }}</div>
+        <div class="text-xs text-slate-500 flex items-center gap-2 mt-1">
+          <span class="text-indigo-600 dark:text-indigo-400 font-medium">{{ tiipe_stats.completed_sessions|default:"0" }} Completed</span>
+          <span>•</span>
+          <span>{{ tiipe_stats.programs_count|default:"4" }} Programs</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4: Novatrix Inquiries -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 shadow-sm space-y-3">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Novatrix Pipeline</span>
+        <div class="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">business_center</span>
+        </div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold text-slate-900 dark:text-white">{{ novatrix_stats.inquiries_count|default:"0" }}</div>
+        <div class="text-xs text-slate-500 flex items-center gap-2 mt-1">
+          <span class="text-amber-600 dark:text-amber-400 font-medium">{{ novatrix_stats.open_tickets|default:"0" }} Open Tickets</span>
+          <span>•</span>
+          <span>{{ novatrix_stats.cohorts_count|default:"3" }} Cohorts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dual-Brand Hub Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- TIIPE Hub -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm flex flex-col">
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+            T
+          </div>
+          <div>
+            <h2 class="font-bold text-slate-900 dark:text-white text-base">The Impact Institute (TIIPE)</h2>
+            <p class="text-xs text-slate-500">Parent Brand • 501(c)(3) Educational & Public Health Platform</p>
+          </div>
+        </div>
+        <a href="{% url 'admin:tiipe_lms_program_changelist' %}" class="text-xs font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400 flex items-center gap-1">
+          Manage LMS <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="p-5 space-y-4 flex-1">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent 501(c)(3) Donations</h3>
+        {% if tiipe_stats.recent_donations %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <tr>
+                  <th class="py-2">Donor</th>
+                  <th class="py-2">Amount</th>
+                  <th class="py-2">Target Fund</th>
+                  <th class="py-2">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for d in tiipe_stats.recent_donations %}
+                <tr>
+                  <td class="py-2 font-medium text-slate-800 dark:text-slate-200">{{ d.donor_name }}</td>
+                  <td class="py-2 font-bold text-emerald-600 dark:text-emerald-400">${{ d.amount }}</td>
+                  <td class="py-2 capitalize text-slate-500">{{ d.fund_allocation }}</td>
+                  <td class="py-2">
+                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold {% if d.status == 'succeeded' %}bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300{% else %}bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300{% endif %}">
+                      {{ d.status }}
                     </span>
-                    <span class="tenant-badge-pill pill-tiipe">
-                        <i class="fas fa-university"></i> Parent: TIIPE LMS
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-6 text-slate-400 text-xs bg-slate-50 dark:bg-slate-950/40 rounded-lg">
+            No recent donations logged. Seed catalog active.
+          </div>
+        {% endif %}
+
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+          <a href="{% url 'admin:cms_governancedocument_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-blue-500">policy</span>
+            Governance
+          </a>
+          <a href="{% url 'admin:cms_boardmember_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-indigo-500">groups</span>
+            Board Bios
+          </a>
+          <a href="{% url 'admin:cms_mediabroadcast_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-pink-500">radio</span>
+            AdieTalk Radio
+          </a>
+          <a href="{% url 'admin:tiipe_lms_mentorshipsession_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-emerald-500">calendar_month</span>
+            Sessions
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Novatrix Hub -->
+    <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm flex flex-col">
+      <div class="p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center font-bold text-sm">
+            N
+          </div>
+          <div>
+            <h2 class="font-bold text-slate-900 dark:text-white text-base">Novatrix Technology</h2>
+            <p class="text-xs text-slate-500">Subsidiary Brand • Software, Systems & Workforce Training</p>
+          </div>
+        </div>
+        <a href="{% url 'admin:novatrix_services_servicepillar_changelist' %}" class="text-xs font-semibold text-amber-600 hover:text-amber-500 dark:text-amber-400 flex items-center gap-1">
+          Manage Services <span class="material-symbols-outlined text-xs">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="p-5 space-y-4 flex-1">
+        <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recent Project Inquiries & Tickets</h3>
+        {% if novatrix_stats.recent_inquiries %}
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                <tr>
+                  <th class="py-2">Client / Org</th>
+                  <th class="py-2">Service Required</th>
+                  <th class="py-2">Reviewed</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                {% for inq in novatrix_stats.recent_inquiries %}
+                <tr>
+                  <td class="py-2 font-medium text-slate-800 dark:text-slate-200">{{ inq.client_name }} ({{ inq.organization|default:"Direct" }})</td>
+                  <td class="py-2 capitalize text-slate-500">{{ inq.service_required }}</td>
+                  <td class="py-2">
+                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold {% if inq.is_reviewed %}bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300{% else %}bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300{% endif %}">
+                      {% if inq.is_reviewed %}Reviewed{% else %}New Lead{% endif %}
                     </span>
-                    <span class="tenant-badge-pill pill-novatrix">
-                        <i class="fas fa-laptop-code"></i> Subsidiary: Novatrix Tech
-                    </span>
-                </div>
-                <h3 style="font-weight: 700; margin-bottom: 0.5rem; color: #fff;">
-                    Welcome to the Master Governance Portal
-                </h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 1rem; max-width: 720px;">
-                    Oversee all isolated tenant schemas, educational programs, technology services, 501(c)(3) donations, B2B inquiries, and global cross-platform user identities from one single interface.
-                </p>
-                <div>
-                    <a href="/admin/tiipe_lms/program/add/" class="quick-action-btn btn-tiipe-action">
-                        <i class="fas fa-plus"></i> Add TIIPE Program
-                    </a>
-                    <a href="/admin/novatrix_services/trainingcourse/add/" class="quick-action-btn btn-novatrix-action">
-                        <i class="fas fa-plus"></i> Add Training Course
-                    </a>
-                    <a href="/admin/cms/mediabroadcast/add/" class="quick-action-btn btn-tiipe-action">
-                        <i class="fas fa-podcast"></i> Broadcast Radio Episode
-                    </a>
-                    <a href="/admin/novatrix_services/projectcasestudy/add/" class="quick-action-btn btn-novatrix-action">
-                        <i class="fas fa-briefcase"></i> Add Case Study
-                    </a>
-                    <a href="/admin/users/customuser/add/" class="quick-action-btn" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #6ee7b7 !important;">
-                        <i class="fas fa-user-plus"></i> Provision User
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-4 col-12 d-none d-lg-block text-right">
-                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; display: inline-block; text-align: left; width: 100%;">
-                    <div style="font-size: 0.8rem; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 0.5rem;">
-                        System Quick Stats
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
-                        <span style="color: #94a3b8;">Active Schemas:</span>
-                        <strong style="color: #4ade80;">public, tiipe, novatrix</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
-                        <span style="color: #94a3b8;">Auth Framework:</span>
-                        <strong style="color: #60a5fa;">SimpleJWT + Session</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem;">
-                        <span style="color: #94a3b8;">Async Workers:</span>
-                        <strong style="color: #fbbf24;">Celery 5.4 + Redis</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span style="color: #94a3b8;">API Specs:</span>
-                        <strong style="color: #e879f9;">OpenAPI 3.0 (Spectacular)</strong>
-                    </div>
-                </div>
-            </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-6 text-slate-400 text-xs bg-slate-50 dark:bg-slate-950/40 rounded-lg">
+            No recent inquiries. Seed catalog ready.
+          </div>
+        {% endif %}
+
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+          <a href="{% url 'admin:novatrix_services_projectcasestudy_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-blue-500">business_center</span>
+            Case Studies
+          </a>
+          <a href="{% url 'admin:novatrix_services_trainingcourse_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-emerald-500">terminal</span>
+            Courses
+          </a>
+          <a href="{% url 'admin:novatrix_services_trainingcohort_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-indigo-500">schedule</span>
+            Cohorts
+          </a>
+          <a href="{% url 'admin:novatrix_services_supportticket_changelist' %}" class="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition">
+            <span class="material-symbols-outlined text-base block mb-1 text-amber-500">support_agent</span>
+            Support
+          </a>
         </div>
+      </div>
     </div>
-
-    <!-- Main 8-Metric Grid -->
-    <div class="row">
-        <!-- 1. TIIPE LMS Programs -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #fbbf24; font-weight: 700;">
-                        TIIPE LMS Hub
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Programs & LMS
-                    </div>
-                    <a href="/admin/tiipe_lms/program/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Manage Academic Catalog &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-tiipe">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. Mentorship Network -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #fbbf24; font-weight: 700;">
-                        Academic Mentorship
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Mentors & Calls
-                    </div>
-                    <a href="/admin/tiipe_lms/mentorapplication/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Review Applications &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-tiipe">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Novatrix 4 Pillars -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 700;">
-                        Novatrix Services
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        4 Core Pillars
-                    </div>
-                    <a href="/admin/novatrix_services/servicepillar/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Blueprints & Verticals &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-novatrix">
-                    <i class="fas fa-cubes"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. Workforce Training -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 700;">
-                        Workforce Academy
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Courses & Cohorts
-                    </div>
-                    <a href="/admin/novatrix_services/trainingcourse/" style="font-size: 0.8rem; color: #94a3b8;">
-                        $150–$400 Catalog &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-novatrix">
-                    <i class="fas fa-laptop-code"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. 501(c)(3) Donations -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #fbbf24; font-weight: 700;">
-                        Charitable Funds
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        501(c)(3) Donations
-                    </div>
-                    <a href="/admin/payments/donation/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Stripe/PayPal Subledger &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-tiipe">
-                    <i class="fas fa-hand-holding-usd"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 6. Inquiries & Support -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #60a5fa; font-weight: 700;">
-                        Client Care Desk
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Inquiries & Tickets
-                    </div>
-                    <a href="/admin/novatrix_services/supportticket/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Triage Inbound Intake &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-novatrix">
-                    <i class="fas fa-headset"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 7. Users & Roles -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #34d399; font-weight: 700;">
-                        Identity & Access
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Users & Roles
-                    </div>
-                    <a href="/admin/users/customuser/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Multi-Tenant RBAC &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-users">
-                    <i class="fas fa-users-cog"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- 8. Schemas & Tenancy -->
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="admin-stat-card">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #a78bfa; font-weight: 700;">
-                        Architecture
-                    </div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0.2rem 0;">
-                        Tenants & Domains
-                    </div>
-                    <a href="/admin/core/clienttenant/" style="font-size: 0.8rem; color: #94a3b8;">
-                        Tenant Routing &rarr;
-                    </a>
-                </div>
-                <div class="admin-stat-icon icon-system">
-                    <i class="fas fa-sitemap"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dual Operations Hub -->
-    <div class="row">
-        <!-- Left Column: TIIPE Operations Hub -->
-        <div class="col-lg-6 col-12">
-            <div class="brand-hub-card">
-                <div class="card-header header-tiipe d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="m-0 font-weight-bold" style="color: #fff;">
-                            <i class="fas fa-university text-warning mr-2"></i> TIIPE Parent Brand Operations
-                        </h5>
-                        <small class="text-muted">The Impact Institute for Public Education (impactinstituteglobal.org)</small>
-                    </div>
-                    <span class="badge badge-warning">Schema: tiipe</span>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-graduation-cap text-warning mr-2"></i> Academic Programs & LMS</strong>
-                                    <div class="small text-muted">Core initiatives, learning modules, lessons, learner progress</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/tiipe_lms/program/add/" class="btn btn-xs btn-outline-warning mr-1"><i class="fas fa-plus"></i> Add</a>
-                                    <a href="/admin/tiipe_lms/program/" class="btn btn-xs btn-primary">Manage</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-user-graduate text-warning mr-2"></i> Mentorship Network</strong>
-                                    <div class="small text-muted">Applications, mentor availability schedules, Jitsi live calls</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/tiipe_lms/mentorapplication/" class="btn btn-xs btn-primary">Review</a>
-                                    <a href="/admin/tiipe_lms/mentorshipsession/" class="btn btn-xs btn-outline-light">Sessions</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-heartbeat text-danger mr-2"></i> Maternal Health Literacy</strong>
-                                    <div class="small text-muted">Public health guides, prenatal literacy resources, policy briefs</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/tiipe_lms/publichealthresource/add/" class="btn btn-xs btn-outline-warning mr-1"><i class="fas fa-plus"></i> Add</a>
-                                    <a href="/admin/tiipe_lms/publichealthresource/" class="btn btn-xs btn-primary">Manage</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-podcast text-warning mr-2"></i> AdieTalk Radio & Media Hub</strong>
-                                    <div class="small text-muted">Broadcast audio, podcasts, webinars, rate card media manager</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/cms/mediabroadcast/add/" class="btn btn-xs btn-outline-warning mr-1"><i class="fas fa-plus"></i> Add</a>
-                                    <a href="/admin/cms/mediabroadcast/" class="btn btn-xs btn-primary">Manage</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-file-contract text-warning mr-2"></i> Governance & Board Members</strong>
-                                    <div class="small text-muted">501(c)(3) bylaws, board member directory, public benefit reports</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/cms/governancedocument/" class="btn btn-xs btn-primary">Documents</a>
-                                    <a href="/admin/cms/boardmember/" class="btn btn-xs btn-outline-light">Board</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-hand-holding-usd text-success mr-2"></i> 501(c)(3) Charitable Donations</strong>
-                                    <div class="small text-muted">Donor subledger, fund allocation, Stripe/PayPal tax receipts</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/payments/donation/" class="btn btn-xs btn-success">Donations Ledger</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Novatrix Operations Hub -->
-        <div class="col-lg-6 col-12">
-            <div class="brand-hub-card">
-                <div class="card-header header-novatrix d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="m-0 font-weight-bold" style="color: #fff;">
-                            <i class="fas fa-laptop-code text-primary mr-2"></i> Novatrix Subsidiary Operations
-                        </h5>
-                        <small class="text-muted">Technology & Workforce Solutions (thenovatrix.com)</small>
-                    </div>
-                    <span class="badge badge-primary">Schema: novatrix</span>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-cubes text-primary mr-2"></i> 4 Service Pillars & Verticals</strong>
-                                    <div class="small text-muted">Software, Systems, Cloud, AI + 6 industry verticals</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/novatrix_services/servicepillar/" class="btn btn-xs btn-primary">Pillars</a>
-                                    <a href="/admin/novatrix_services/industrysolution/" class="btn btn-xs btn-outline-light">Industries</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-graduation-cap text-primary mr-2"></i> Workforce Training Academy</strong>
-                                    <div class="small text-muted">Professional courses ($150–$400), cohorts, registration quotas</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/novatrix_services/trainingcourse/add/" class="btn btn-xs btn-outline-primary mr-1"><i class="fas fa-plus"></i> Add</a>
-                                    <a href="/admin/novatrix_services/trainingcourse/" class="btn btn-xs btn-primary">Courses</a>
-                                    <a href="/admin/novatrix_services/trainingcohort/" class="btn btn-xs btn-outline-light">Cohorts</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-briefcase text-primary mr-2"></i> Project Case Studies & Blueprints</strong>
-                                    <div class="small text-muted">Delivered, In Development, and Concept showcase studies</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/novatrix_services/projectcasestudy/add/" class="btn btn-xs btn-outline-primary mr-1"><i class="fas fa-plus"></i> Add</a>
-                                    <a href="/admin/novatrix_services/projectcasestudy/" class="btn btn-xs btn-primary">Manage</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-comments text-info mr-2"></i> Project & Training Inquiries</strong>
-                                    <div class="small text-muted">Consultation requests, RFPs, technical brief downloads</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/novatrix_services/projectinquiry/" class="btn btn-xs btn-info">Project RFPs</a>
-                                    <a href="/admin/novatrix_services/traininginquiry/" class="btn btn-xs btn-outline-light">Training</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-headset text-warning mr-2"></i> Client Technical Support Desk</strong>
-                                    <div class="small text-muted">Client issue intake, SLA priority triage (Low, High, Urgent)</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/novatrix_services/supportticket/" class="btn btn-xs btn-warning">Ticket Queue</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-file-invoice-dollar text-success mr-2"></i> Invoices & Payment Transactions</strong>
-                                    <div class="small text-muted">Commercial B2B invoicing, transaction logs, payment verification</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/payments/invoice/add/" class="btn btn-xs btn-outline-success mr-1"><i class="fas fa-plus"></i> Issue</a>
-                                    <a href="/admin/payments/invoice/" class="btn btn-xs btn-success">Invoices</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bottom Row: Shared Platform & Recent Audit Log -->
-    <div class="row">
-        <!-- Shared Infrastructure -->
-        <div class="col-lg-7 col-12">
-            <div class="brand-hub-card">
-                <div class="card-header header-system d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="m-0 font-weight-bold" style="color: #fff;">
-                            <i class="fas fa-server text-success mr-2"></i> Global Master Platform Infrastructure
-                        </h5>
-                        <small class="text-muted">Multi-Tenant Routing, Identity Access Management, Push Messaging & Assets</small>
-                    </div>
-                    <span class="badge badge-success">Master Public Layer</span>
-                </div>
-                <div class="card-body p-0">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-users-cog text-success mr-2"></i> User Directory & Tenant RBAC</strong>
-                                    <div class="small text-muted">Global users, profiles, COPPA child protection flags, tenant memberships</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/users/customuser/" class="btn btn-xs btn-primary">Users</a>
-                                    <a href="/admin/users/tenantmembership/" class="btn btn-xs btn-outline-light">Roles</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-sitemap text-info mr-2"></i> Tenant Schemas & Custom Domains</strong>
-                                    <div class="small text-muted">PostgreSQL isolated schemas, SSL domain mappings (impactinstituteglobal.org / thenovatrix.com)</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/core/clienttenant/" class="btn btn-xs btn-info">Tenants</a>
-                                    <a href="/admin/core/domain/" class="btn btn-xs btn-outline-light">Domains</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-photo-video text-warning mr-2"></i> Media Assets & Document Vault</strong>
-                                    <div class="small text-muted">Tenant-prefixed S3/Spaces file storage, downloadable assets, policy documents</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/files/mediaasset/" class="btn btn-xs btn-warning">Media</a>
-                                    <a href="/admin/files/documentupload/" class="btn btn-xs btn-outline-light">Documents</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong><i class="fas fa-bell text-danger mr-2"></i> Notifications & Mobile Push Tokens</strong>
-                                    <div class="small text-muted">FCM/APNS iOS & Android device tokens, SendGrid templates, async dispatch logs</div>
-                                </td>
-                                <td class="text-right">
-                                    <a href="/admin/notifications/pushdevicetoken/" class="btn btn-xs btn-danger">Mobile Devices</a>
-                                    <a href="/admin/notifications/notificationlog/" class="btn btn-xs btn-outline-light">Dispatch Logs</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Audit Activity Log -->
-        <div class="col-lg-5 col-12">
-            <div class="brand-hub-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="m-0 font-weight-bold" style="color: #fff;">
-                        <i class="fas fa-history text-muted mr-2"></i> Recent Administrator Actions
-                    </h5>
-                    <small class="text-muted">Live Audit Trail</small>
-                </div>
-                <div class="card-body" style="max-height: 330px; overflow-y: auto;">
-                    {% load log %}
-                    {% get_admin_log 6 as admin_log for_user user %}
-                    {% if not admin_log %}
-                        <div class="text-center py-4 text-muted">
-                            <i class="fas fa-shield-alt fa-2x mb-2 text-muted"></i>
-                            <p class="m-0">No recent administrative modifications recorded.</p>
-                        </div>
-                    {% else %}
-                        <div class="timeline timeline-inverse">
-                            {% for entry in admin_log %}
-                                <div>
-                                    {% if entry.is_change %}
-                                        <i class="fas fa-edit bg-primary text-xs"></i>
-                                    {% elif entry.is_deletion %}
-                                        <i class="fas fa-trash bg-danger text-xs"></i>
-                                    {% elif entry.is_addition %}
-                                        <i class="fas fa-plus-circle bg-success text-xs"></i>
-                                    {% endif %}
-
-                                    <div class="timeline-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 0.5rem; color: #fff;">
-                                        <span class="time text-muted"><i class="fas fa-clock"></i> {{ entry.action_time|timesince }} ago</span>
-                                        <h3 class="timeline-header no-border font-weight-bold" style="font-size: 0.85rem; color: #f8fafc;">
-                                            {% if entry.is_deletion or not entry.get_admin_url %}
-                                                {{ entry.object_repr }}
-                                            {% else %}
-                                                <a href="{{ entry.get_admin_url }}" class="text-info">{{ entry.object_repr }}</a>
-                                            {% endif %}
-                                            {% if entry.model %}
-                                                <span class="badge badge-secondary ml-1">{{ entry.model }}</span>
-                                            {% endif %}
-                                        </h3>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
+</div>
 {% endblock %}

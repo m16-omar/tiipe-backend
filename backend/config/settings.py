@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
 import dj_database_url
+from django.urls import reverse_lazy
 
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,7 +20,10 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*', cast=Csv())
 SHARED_APPS = [
     'django_tenants',  # Must be first
     'apps.core',       # Contains ClientTenant and Domain models
-    'jazzmin',         # Modern Django Admin theme (must precede django.contrib.admin)
+    'unfold',          # Modern Tailwind CSS Django Admin theme (must precede django.contrib.admin)
+    'unfold.contrib.filters',
+    'unfold.contrib.forms',
+    'unfold.contrib.inlines',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -230,145 +234,268 @@ SPECTACULAR_SETTINGS = {
 }
 
 # ==============================================================================
-# JAZZMIN MODERN ADMIN THEME CONFIGURATION
+# UNFOLD MODERN TAILWIND CSS ADMIN THEME CONFIGURATION
 # ==============================================================================
 
-JAZZMIN_SETTINGS = {
-    "site_title": "TIIPE & Novatrix Master Admin",
-    "site_header": "TIIPE / Novatrix Admin",
-    "site_brand": "TIIPE & Novatrix",
-    "welcome_sign": "Unified Multi-Tenant Management Portal",
-    "copyright": "TIIPE & Novatrix Unified Master Systems",
-    "search_model": ["users.CustomUser", "core.ClientTenant", "tiipe_lms.Program", "novatrix_services.ServicePillar"],
-    "user_avatar": None,
-    "topmenu_links": [
-        {"name": "Master Dashboard", "url": "/", "permissions": ["auth.view_user"]},
-        {"name": "Swagger UI", "url": "/api/docs/", "new_window": True},
-        {"name": "ReDoc", "url": "/api/redoc/", "new_window": True},
-        {"name": "Health Telemetry", "url": "/health/", "new_window": True},
-    ],
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
-    "order_with_respect_to": [
-        "core",
-        "users",
-        "tiipe_lms",
-        "novatrix_services",
-        "cms",
-        "payments",
-        "notifications",
-        "files",
-        "auth",
-    ],
-    "custom_links": {
-        "core": [{
-            "name": "Live API Swagger UI",
-            "url": "/api/docs/",
-            "icon": "fas fa-code",
-            "permissions": ["core.view_clienttenant"]
-        }, {
-            "name": "Live ReDoc Specs",
-            "url": "/api/redoc/",
-            "icon": "fas fa-book",
-            "permissions": ["core.view_clienttenant"]
-        }, {
-            "name": "Public Master Gateway",
-            "url": "/",
-            "icon": "fas fa-network-wired",
-            "permissions": ["core.view_clienttenant"]
-        }]
+UNFOLD = {
+    "SITE_TITLE": "TIIPE & Novatrix Master Admin",
+    "SITE_HEADER": "TIIPE / Novatrix",
+    "SITE_SUBHEADER": "Enterprise Multi-Tenant Control Hub",
+    "SITE_URL": "/",
+    "SITE_SYMBOL": "account_balance",
+    "DASHBOARD_CALLBACK": "apps.core.dashboard.dashboard_callback",
+    "THEME": "dark",
+    "COLORS": {
+        "primary": {
+            "50": "239 246 255",
+            "100": "219 234 254",
+            "200": "191 219 254",
+            "300": "147 197 253",
+            "400": "96 165 250",
+            "500": "59 130 246",
+            "600": "37 99 235",
+            "700": "30 58 138",
+            "800": "30 41 59",
+            "900": "15 23 42",
+            "950": "2 6 23",
+        },
     },
-    "custom_css": "css/custom_admin.css",
-    "custom_js": "js/custom_admin.js",
-    "icons": {
-        "auth": "fas fa-users-cog",
-        "auth.Group": "fas fa-user-friends",
-        "users.CustomUser": "fas fa-user-shield",
-        "users.UserProfile": "fas fa-id-badge",
-        "users.TenantMembership": "fas fa-user-tag",
-        "core.ClientTenant": "fas fa-building",
-        "core.Domain": "fas fa-globe",
-        "cms.HeroSection": "fas fa-tv",
-        "cms.NavigationMenu": "fas fa-bars",
-        "cms.GovernanceDocument": "fas fa-file-contract",
-        "cms.BoardMember": "fas fa-user-tie",
-        "cms.MediaBroadcast": "fas fa-podcast",
-        "cms.Webinar": "fas fa-video",
-        "cms.ImpactMetric": "fas fa-chart-line",
-        "cms.PublicBenefitStatement": "fas fa-award",
-        "cms.ArticleCategory": "fas fa-tags",
-        "cms.Article": "fas fa-newspaper",
-        "cms.FAQ": "fas fa-question-circle",
-        "cms.Testimonial": "fas fa-comment-dots",
-        "cms.ContactMessage": "fas fa-envelope-open-text",
-        "cms.EventNotice": "fas fa-calendar-alt",
-        "tiipe_lms.Program": "fas fa-graduation-cap",
-        "tiipe_lms.MentorApplication": "fas fa-user-graduate",
-        "tiipe_lms.MentorAvailability": "fas fa-clock",
-        "tiipe_lms.MentorshipSession": "fas fa-chalkboard-teacher",
-        "tiipe_lms.LearningModule": "fas fa-book-reader",
-        "tiipe_lms.Lesson": "fas fa-list-ol",
-        "tiipe_lms.LearnerProgress": "fas fa-tasks",
-        "tiipe_lms.PublicHealthResource": "fas fa-heartbeat",
-        "tiipe_lms.PolicyBrief": "fas fa-file-alt",
-        "novatrix_services.ServicePillar": "fas fa-cubes",
-        "novatrix_services.IndustrySolution": "fas fa-industry",
-        "novatrix_services.ProjectCaseStudy": "fas fa-briefcase",
-        "novatrix_services.TrainingCourse": "fas fa-laptop-code",
-        "novatrix_services.TrainingCohort": "fas fa-users-class",
-        "novatrix_services.ProjectInquiry": "fas fa-comments",
-        "novatrix_services.TrainingInquiry": "fas fa-user-check",
-        "novatrix_services.SupportTicket": "fas fa-headset",
-        "novatrix_services.CapabilityDownload": "fas fa-cloud-download-alt",
-        "payments.Donation": "fas fa-hand-holding-usd",
-        "payments.DonationAllocation": "fas fa-donate",
-        "payments.PaymentTransaction": "fas fa-receipt",
-        "payments.Invoice": "fas fa-file-invoice-dollar",
-        "payments.WebhookLog": "fas fa-exchange-alt",
-        "notifications.PushDeviceToken": "fas fa-mobile-alt",
-        "notifications.NotificationLog": "fas fa-bell",
-        "notifications.EmailTemplate": "fas fa-mail-bulk",
-        "files.MediaAsset": "fas fa-photo-video",
-        "files.DocumentUpload": "fas fa-folder-open",
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Master Overview",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Master Dashboard",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                    {
+                        "title": "Public Gateway",
+                        "icon": "language",
+                        "link": "/",
+                    },
+                    {
+                        "title": "Swagger UI Docs",
+                        "icon": "code",
+                        "link": "/api/docs/",
+                    },
+                    {
+                        "title": "Health Telemetry",
+                        "icon": "monitor_heart",
+                        "link": "/health/",
+                    },
+                ],
+            },
+            {
+                "title": "Multi-Tenant & Identity (Shared)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Tenant Schemas",
+                        "icon": "domain",
+                        "link": reverse_lazy("admin:core_clienttenant_changelist"),
+                    },
+                    {
+                        "title": "Domain Routes",
+                        "icon": "dns",
+                        "link": reverse_lazy("admin:core_domain_changelist"),
+                    },
+                    {
+                        "title": "User Accounts",
+                        "icon": "people",
+                        "link": reverse_lazy("admin:users_customuser_changelist"),
+                    },
+                    {
+                        "title": "User Profiles",
+                        "icon": "badge",
+                        "link": reverse_lazy("admin:users_userprofile_changelist"),
+                    },
+                    {
+                        "title": "Tenant Memberships",
+                        "icon": "group_work",
+                        "link": reverse_lazy("admin:users_tenantmembership_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "TIIPE — Education & Health (Parent)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Educational Programs",
+                        "icon": "school",
+                        "link": reverse_lazy("admin:tiipe_lms_program_changelist"),
+                    },
+                    {
+                        "title": "Mentor Applications",
+                        "icon": "how_to_reg",
+                        "link": reverse_lazy("admin:tiipe_lms_mentorapplication_changelist"),
+                    },
+                    {
+                        "title": "Mentor Availability",
+                        "icon": "event_available",
+                        "link": reverse_lazy("admin:tiipe_lms_mentoravailability_changelist"),
+                    },
+                    {
+                        "title": "Mentorship Sessions",
+                        "icon": "calendar_month",
+                        "link": reverse_lazy("admin:tiipe_lms_mentorshipsession_changelist"),
+                    },
+                    {
+                        "title": "Learning Modules",
+                        "icon": "menu_book",
+                        "link": reverse_lazy("admin:tiipe_lms_learningmodule_changelist"),
+                    },
+                    {
+                        "title": "Public Health Resources",
+                        "icon": "health_and_safety",
+                        "link": reverse_lazy("admin:tiipe_lms_publichealthresource_changelist"),
+                    },
+                    {
+                        "title": "Policy & Research Briefs",
+                        "icon": "description",
+                        "link": reverse_lazy("admin:tiipe_lms_policybrief_changelist"),
+                    },
+                    {
+                        "title": "Governance Documents",
+                        "icon": "policy",
+                        "link": reverse_lazy("admin:cms_governancedocument_changelist"),
+                    },
+                    {
+                        "title": "Board of Directors",
+                        "icon": "groups",
+                        "link": reverse_lazy("admin:cms_boardmember_changelist"),
+                    },
+                    {
+                        "title": "AdieTalk Radio & Media",
+                        "icon": "radio",
+                        "link": reverse_lazy("admin:cms_mediabroadcast_changelist"),
+                    },
+                    {
+                        "title": "Webinars",
+                        "icon": "video_camera_front",
+                        "link": reverse_lazy("admin:cms_webinar_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Novatrix — Tech & Solutions (Subsidiary)",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "4 Service Pillars",
+                        "icon": "category",
+                        "link": reverse_lazy("admin:novatrix_services_servicepillar_changelist"),
+                    },
+                    {
+                        "title": "Industry Solutions",
+                        "icon": "corporate_fare",
+                        "link": reverse_lazy("admin:novatrix_services_industrysolution_changelist"),
+                    },
+                    {
+                        "title": "Projects & Case Studies",
+                        "icon": "business_center",
+                        "link": reverse_lazy("admin:novatrix_services_projectcasestudy_changelist"),
+                    },
+                    {
+                        "title": "Technology Courses",
+                        "icon": "terminal",
+                        "link": reverse_lazy("admin:novatrix_services_trainingcourse_changelist"),
+                    },
+                    {
+                        "title": "Training Cohorts",
+                        "icon": "schedule",
+                        "link": reverse_lazy("admin:novatrix_services_trainingcohort_changelist"),
+                    },
+                    {
+                        "title": "Project Inquiries",
+                        "icon": "forum",
+                        "link": reverse_lazy("admin:novatrix_services_projectinquiry_changelist"),
+                    },
+                    {
+                        "title": "Training Inquiries",
+                        "icon": "record_voice_over",
+                        "link": reverse_lazy("admin:novatrix_services_traininginquiry_changelist"),
+                    },
+                    {
+                        "title": "Client Support Tickets",
+                        "icon": "support_agent",
+                        "link": reverse_lazy("admin:novatrix_services_supportticket_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Finance & Communications",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "501(c)(3) Donations",
+                        "icon": "volunteer_activism",
+                        "link": reverse_lazy("admin:payments_donation_changelist"),
+                    },
+                    {
+                        "title": "Payment Transactions",
+                        "icon": "receipt_long",
+                        "link": reverse_lazy("admin:payments_paymenttransaction_changelist"),
+                    },
+                    {
+                        "title": "Invoices",
+                        "icon": "request_quote",
+                        "link": reverse_lazy("admin:payments_invoice_changelist"),
+                    },
+                    {
+                        "title": "Gateway Webhooks",
+                        "icon": "webhook",
+                        "link": reverse_lazy("admin:payments_webhooklog_changelist"),
+                    },
+                    {
+                        "title": "Hero Banners",
+                        "icon": "view_carousel",
+                        "link": reverse_lazy("admin:cms_herosection_changelist"),
+                    },
+                    {
+                        "title": "Impact Counters",
+                        "icon": "trending_up",
+                        "link": reverse_lazy("admin:cms_impactmetric_changelist"),
+                    },
+                    {
+                        "title": "Articles & News",
+                        "icon": "newspaper",
+                        "link": reverse_lazy("admin:cms_article_changelist"),
+                    },
+                    {
+                        "title": "Contact Inquiries",
+                        "icon": "mail",
+                        "link": reverse_lazy("admin:cms_contactmessage_changelist"),
+                    },
+                    {
+                        "title": "Push Device Tokens",
+                        "icon": "devices",
+                        "link": reverse_lazy("admin:notifications_pushdevicetoken_changelist"),
+                    },
+                    {
+                        "title": "Notification Logs",
+                        "icon": "notifications_active",
+                        "link": reverse_lazy("admin:notifications_notificationlog_changelist"),
+                    },
+                    {
+                        "title": "Media Assets",
+                        "icon": "perm_media",
+                        "link": reverse_lazy("admin:files_mediaasset_changelist"),
+                    },
+                    {
+                        "title": "Document Uploads",
+                        "icon": "folder",
+                        "link": reverse_lazy("admin:files_documentupload_changelist"),
+                    },
+                ],
+            },
+        ],
     },
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
-    "changeform_format": "horizontal_tabs",
-    "related_modal_active": True,
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": "navbar-dark",
-    "accent": "accent-primary",
-    "navbar": "navbar-dark navbar-navy",
-    "no_navbar_border": False,
-    "navbar_fixed": True,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False,
-    "theme": "darkly",
-    "dark_mode_theme": "darkly",
-    "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    }
 }
 
 # ==============================================================================
