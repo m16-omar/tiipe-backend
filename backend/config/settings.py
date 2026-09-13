@@ -243,7 +243,6 @@ UNFOLD = {
     "SITE_SUBHEADER": "Enterprise Multi-Tenant Control Hub",
     "SITE_URL": "/admin/",
     "SITE_SYMBOL": "account_balance",
-    "DASHBOARD_CALLBACK": "apps.core.dashboard.dashboard_callback",
     "THEME": "dark",
     "STYLES": [
         "/static/css/tiipe_brand.css",
