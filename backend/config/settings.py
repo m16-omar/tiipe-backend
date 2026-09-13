@@ -245,6 +245,9 @@ UNFOLD = {
     "SITE_SYMBOL": "account_balance",
     "DASHBOARD_CALLBACK": "apps.core.dashboard.dashboard_callback",
     "THEME": "dark",
+    "STYLES": [
+        "/static/css/tiipe_brand.css",
+    ],
     "COLORS": {
         "primary": {
             "50": "239 246 255",
