@@ -1,22 +1,22 @@
 :root, html, body, * {
     accent-color: #2563eb !important;
     
-    /* Global Unfold Variable Overrides */
+    /* Global Unfold Variable Overrides - Force Royal Blue Everywhere */
     --color-primary-50: 239 246 255 !important;
     --color-primary-100: 219 234 254 !important;
     --color-primary-200: 191 219 254 !important;
     --color-primary-300: 147 197 253 !important;
     --color-primary-400: 96 165 250 !important;
     --color-primary-500: 37 99 235 !important;
-    --color-primary-600: 30 58 138 !important;
-    --color-primary-700: 29 78 216 !important;
-    --color-primary-800: 30 41 59 !important;
-    --color-primary-900: 15 23 42 !important;
+    --color-primary-600: 29 78 216 !important;
+    --color-primary-700: 30 64 175 !important;
+    --color-primary-800: 30 58 138 !important;
+    --color-primary-900: 23 37 84 !important;
     
-    --dashboard-card: 222 47% 11%;
-    --color-font-important-light: 15 23 42 !important;
-    --color-font-default-light: 51 65 85 !important;
-    --color-font-subtle-light: 100 116 139 !important;
+    /* Font Color Overrides for Visibility */
+    --color-font-important-light: 17 24 39 !important;
+    --color-font-default-light: 75 85 99 !important;
+    --color-font-subtle-light: 107 114 128 !important;
 }
 
 /* Base content area overrides */
@@ -34,81 +34,209 @@ main.content {
 .dark .content,
 .dark main.content,
 .dark body {
-    background-color: #0b1120 !important;
+    background-color: #0f172a !important;
 }
 
-/* Dashboard Cards */
-.tiipe-card {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 20px !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
-    transition: all 0.2s ease-in-out !important;
+/* Header border & Unfold header overrides */
+.unfold-header, 
+header, 
+.border-primary-600,
+.bg-primary-600 {
+    border-color: #2563eb !important;
 }
 
-.dark .tiipe-card {
-    background: #111827 !important;
-    border: 1px solid #1f2937 !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
+/* Sidebar Logo Resizing */
+aside img, 
+.unfold-navigation img,
+[alt*="TIIPE"],
+[src*="logo"],
+.unfold-sidebar-header img,
+.sidebar-logo img,
+.branding img,
+.unfold-branding img {
+    max-height: 44px !important;
+    max-width: 160px !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    display: inline-block !important;
+    position: static !important;
 }
 
-.tiipe-card:hover {
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
+/* Sidebar Header Container */
+#nav-sidebar-inner > div:first-child {
+    height: 80px !important;
+    min-height: 80px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    margin-bottom: 0 !important;
+    background-color: transparent !important;
 }
 
-.dark .tiipe-card:hover {
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
-    border-color: #374151 !important;
+.dark #nav-sidebar-inner > div:first-child {
+    border-bottom-color: rgba(255,255,255,0.05) !important;
 }
 
-/* Sidebar Styling */
+/* GLOBAL THEME CONTAINERS FIX */
 #nav-sidebar {
-    border-right: 1px solid rgba(226, 232, 240, 0.8) !important;
+    background-color: #ffffff !important;
+    border-right: 1px solid #f3f4f6 !important;
 }
 
 .dark #nav-sidebar {
-    border-right: 1px solid rgba(31, 41, 55, 0.8) !important;
-    background-color: #0d1526 !important;
+    background-color: #0f172a !important;
+    border-right: 1px solid rgba(30, 41, 59, 1) !important;
 }
 
-#nav-sidebar-inner a {
-    transition: all 0.15s ease !important;
+/* Sidebar text visibility */
+#nav-sidebar-inner,
+#nav-sidebar-inner .text-font-default-light,
+#nav-sidebar-inner .text-font-important-light,
+.text-font-important-light {
+    color: #4b5563 !important;
 }
 
+#nav-sidebar-inner > div:first-child,
+#nav-sidebar-inner > div:first-child *,
+.text-font-important-light,
+.text-font-important-light *,
+#nav-sidebar-inner .text-font-important-light,
+#nav-sidebar-inner .text-font-important-light *,
+[class*="navigation_header"],
+[class*="navigation_header"] * {
+    color: #111827 !important;
+}
+
+.dark #nav-sidebar-inner > div:first-child,
+.dark #nav-sidebar-inner > div:first-child *,
+.dark #nav-sidebar-inner,
+.dark .text-font-important-dark,
+.dark [class*="navigation_header"],
+.dark [class*="navigation_header"] * {
+    color: #f3f4f6 !important;
+}
+
+.dark #nav-sidebar-inner .dark\:text-font-default-dark,
+.dark #nav-sidebar-inner .dark\:text-font-important-dark,
+.dark .dark\:text-font-important-dark,
+.dark .text-font-important-dark * {
+    color: #f3f4f6 !important;
+}
+
+/* Global Form Input Focus Ring Overrides */
+input:focus, 
+textarea:focus, 
+select:focus,
+[type='text']:focus,
+[type='email']:focus,
+[type='url']:focus,
+[type='password']:focus,
+[type='number']:focus,
+[type='date']:focus,
+[type='datetime-local']:focus,
+[type='month']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='time']:focus,
+[type='week']:focus,
+[multiple]:focus,
+.focus\:ring-blue-500:focus,
+.focus\:border-blue-500:focus,
+.focus\:ring-primary-500:focus,
+.focus\:border-primary-500:focus,
+.focus\:ring-primary-600:focus,
+.focus\:border-primary-600:focus {
+    outline: none !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+    --tw-ring-color: rgba(37, 99, 235, 0.5) !important;
+}
+
+/* Ensure Text Inside Inputs is Always Visible */
+input:not([type="submit"]):not([type="button"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), 
+textarea, 
+select {
+    color: #111827 !important;
+}
+
+.dark input:not([type="submit"]):not([type="button"]):not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), 
+.dark textarea, 
+.dark select {
+    color: #f3f4f6 !important;
+}
+
+/* ==========================================================================
+   SIDEBAR NAVIGATION - FINAL OVERRIDES
+   ========================================================================== */
+
+/* 1. Base Inactive State */
+#nav-sidebar-inner a,
+#nav-sidebar-inner a * {
+    color: #64748b !important;
+    transition: all 0.2s ease !important;
+}
+
+.dark #nav-sidebar-inner a,
+.dark #nav-sidebar-inner a * {
+    color: #94a3b8 !important;
+}
+
+/* 2. Active & Hover States - Force Branded Royal Blue */
+#nav-sidebar-inner a:hover,
+#nav-sidebar-inner a:hover *,
+#nav-sidebar-inner a.active,
+#nav-sidebar-inner a.active *,
+#nav-sidebar-inner a[aria-current="page"],
+#nav-sidebar-inner a[aria-current="page"] *,
+#nav-sidebar-inner a.text-primary-600,
+#nav-sidebar-inner a.text-primary-600 *,
+.dark #nav-sidebar-inner a.dark\:text-primary-500,
+.dark #nav-sidebar-inner a.dark\:text-primary-500 *,
+#nav-sidebar-inner .unfold-navigation-item-active,
+#nav-sidebar-inner .unfold-navigation-item-active * {
+    color: #2563eb !important;
+}
+
+.dark #nav-sidebar-inner a:hover,
+.dark #nav-sidebar-inner a:hover *,
+.dark #nav-sidebar-inner a.active,
+.dark #nav-sidebar-inner a.active *,
+.dark #nav-sidebar-inner a[aria-current="page"],
+.dark #nav-sidebar-inner a[aria-current="page"] *,
+.dark #nav-sidebar-inner a.dark\:text-primary-500,
+.dark #nav-sidebar-inner .unfold-navigation-item-active,
+.dark #nav-sidebar-inner .unfold-navigation-item-active * {
+    color: #60a5fa !important;
+}
+
+/* 3. Active Background Highlight - Clean Branded Pill */
 #nav-sidebar-inner a.active,
 #nav-sidebar-inner a[aria-current="page"],
+#nav-sidebar-inner a.text-primary-600,
+.dark #nav-sidebar-inner a.dark\:text-primary-500,
 #nav-sidebar-inner .unfold-navigation-item-active {
-    background-color: rgba(37, 99, 235, 0.15) !important;
+    background-color: rgba(37, 99, 235, 0.12) !important;
     border-radius: 10px !important;
-    color: #3b82f6 !important;
-    font-weight: 600 !important;
+    position: relative !important;
 }
 
 .dark #nav-sidebar-inner a.active,
 .dark #nav-sidebar-inner a[aria-current="page"],
 .dark #nav-sidebar-inner .unfold-navigation-item-active {
-    background-color: rgba(59, 130, 246, 0.18) !important;
-    color: #60a5fa !important;
+    background-color: rgba(37, 99, 235, 0.22) !important;
 }
 
-#nav-sidebar-inner a.active *,
-#nav-sidebar-inner a[aria-current="page"] * {
-    color: #3b82f6 !important;
+/* 4. Hover Background Highlight */
+#nav-sidebar-inner a:hover:not(.active):not([aria-current="page"]) {
+    background-color: rgba(37, 99, 235, 0.06) !important;
+    border-radius: 10px !important;
 }
 
-.dark #nav-sidebar-inner a.active *,
-.dark #nav-sidebar-inner a[aria-current="page"] * {
-    color: #60a5fa !important;
-}
-
-/* Header border */
-.unfold-header, 
-header {
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
-}
-
-.dark .unfold-header,
-.dark header {
-    border-bottom: 1px solid rgba(31, 41, 55, 0.8) !important;
-    background-color: #0b1120 !important;
+.dark #nav-sidebar-inner a:hover:not(.active):not([aria-current="page"]) {
+    background-color: rgba(37, 99, 235, 0.12) !important;
 }

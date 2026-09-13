@@ -1,0 +1,382 @@
+{% extends 'unfold/layouts/base_simple.html' %}
+{% load unfold i18n static %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('TIIPE & Novatrix Admin') }}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script>
+        /* Full Tailwind Configuration for TIIPE Royal Blue & Navy Palette */
+        window.tailwind = {
+            config: {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                50: '#eff6ff',
+                                100: '#dbeafe',
+                                200: '#bfdbfe',
+                                300: '#93c5fd',
+                                400: '#60a5fa',
+                                500: '#2563eb', // Royal Blue
+                                600: '#1d4ed8',
+                                700: '#1e40af',
+                                800: '#1e3a8a', // Deep Royal Navy
+                                900: '#172554',
+                                950: '#0f172a',
+                            },
+                            amber: {
+                                500: '#f59e0b',
+                                600: '#d97706',
+                            },
+                            emerald: {
+                                500: '#10b981',
+                                600: '#059669',
+                            }
+                        },
+                        fontFamily: {
+                            sans: ['Outfit', 'sans-serif'],
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --color-primary-50: 239 246 255;
+            --color-primary-100: 219 234 254;
+            --color-primary-200: 191 219 254;
+            --color-primary-300: 147 197 253;
+            --color-primary-400: 96 165 250;
+            --color-primary-500: 37 99 235;
+            --color-primary-600: 29 78 216;
+            --color-primary-700: 30 64 175;
+            --color-primary-800: 30 58 138;
+            --color-primary-900: 23 37 84;
+        }
+        
+        :root {
+            --dashboard-bg: 210 40% 98%;
+            --dashboard-card: 0 0% 100%;
+        }
+
+        .dark {
+            --dashboard-bg: 222 47% 11%;
+            --dashboard-card: 217 33% 17%;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        /* SITE WIDE TYPOGRAPHY FIX */
+        :not(.dark) h1, 
+        :not(.dark) h2, 
+        :not(.dark) h3, 
+        :not(.dark) h4, 
+        :not(.dark) h5, 
+        :not(.dark) h6 {
+            color: #111827 !important;
+            text-transform: uppercase !important;
+            font-weight: 900 !important;
+        }
+
+        .dark h1, 
+        .dark h2, 
+        .dark h3, 
+        .dark h4, 
+        .dark h5, 
+        .dark h6 {
+            color: #ffffff !important;
+            text-transform: uppercase !important;
+            font-weight: 900 !important;
+        }
+
+        .text-primary-500,
+        .text-primary-600 {
+            color: #2563eb !important;
+        }
+
+        /* BRANDED FIRST WORD VISIBILITY */
+        .branded-first-word {
+            color: #111827 !important;
+        }
+
+        .dark .branded-first-word {
+            color: #ffffff !important;
+        }
+
+        /* FORCE DARK MODE TEXT VISIBILITY */
+        .dark .dark\:text-white,
+        .dark .dark\:text-gray-100,
+        .dark .dark\:text-gray-200,
+        .dark .dark\:text-gray-300 {
+            color: #ffffff !important;
+        }
+
+        .dark .dark\:text-gray-400,
+        .dark .dark\:text-gray-500,
+        .dark .text-gray-400,
+        .dark .text-gray-500,
+        .dark p,
+        .dark .uppercase.tracking-widest {
+            color: #e2e8f0 !important;
+        }
+
+        /* SIDEBAR BRANDING VISIBILITY */
+        #nav-sidebar-inner > div:first-child,
+        #nav-sidebar-inner > div:first-child *,
+        .text-font-important-light, 
+        .text-font-important-light *,
+        [class*="navigation_header"],
+        [class*="navigation_header"] * {
+            color: #111827 !important;
+        }
+
+        .dark #nav-sidebar-inner > div:first-child,
+        .dark #nav-sidebar-inner > div:first-child *,
+        .dark .text-font-important-dark,
+        .dark .text-font-important-dark *,
+        .dark [class*="navigation_header"],
+        .dark [class*="navigation_header"] * {
+            color: #ffffff !important;
+        }
+
+        .text-primary-500,
+        .text-primary-500 * {
+            color: #2563eb !important;
+        }
+
+        /* Light Mode Text Fix */
+        :not(.dark) .text-gray-900 { color: #111827 !important; }
+        :not(.dark) .text-gray-800 { color: #1f2937 !important; }
+        :not(.dark) .text-gray-700 { color: #374151 !important; }
+        :not(.dark) .text-gray-600 { color: #4b5563 !important; }
+        :not(.dark) .text-gray-500 { color: #6b7280 !important; }
+        :not(.dark) .text-gray-400 { color: #9ca3af !important; }
+
+        :not(.dark) .dashboard-card h3,
+        :not(.dark) .dashboard-card p,
+        :not(.dark) .dashboard-card span:not(.text-primary-500) {
+            color: #111827 !important;
+        }
+
+        :not(.dark) .dashboard-card .text-gray-400,
+        :not(.dark) .dashboard-card .text-gray-500 {
+            color: #6b7280 !important;
+        }
+
+        /* Buttons & Action Badges */
+        .bg-primary-600 {
+            background-color: #1d4ed8 !important;
+        }
+        .bg-primary-500 {
+            background-color: #2563eb !important;
+        }
+
+        .bg-primary-600, 
+        .bg-primary-600 *,
+        .bg-primary-500,
+        .bg-primary-500 * {
+            color: #ffffff !important;
+        }
+
+        .text-primary-500 {
+            color: #2563eb !important;
+        }
+
+        :not(.dark) .bg-gray-50, 
+        :not(.dark) .bg-gray-100 {
+            background-color: #f1f5f9 !important;
+            color: #111827 !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        .dark .bg-gray-800,
+        .dark .bg-gray-900,
+        .dark .bg-black\/40,
+        .dark .bg-gray-800 *,
+        .dark .bg-gray-900 *,
+        .dark .bg-black\/40 * {
+            color: #ffffff !important;
+        }
+
+        .dark .dashboard-card h1,
+        .dark .dashboard-card h2,
+        .dark .dashboard-card h3,
+        .dark .dashboard-card h4,
+        .dark .dashboard-card h5,
+        .dark .dashboard-card h6 {
+            color: #ffffff !important;
+        }
+
+        .dark .dashboard-card .text-gray-400,
+        .dark .dashboard-card .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+
+        .dark .text-gray-400,
+        .dark .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+
+        /* Dropdown Menus */
+        [x-show="open"] {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .dark [x-show="open"] {
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
+        }
+
+        [x-show="open"] button,
+        [x-show="open"] a {
+            color: #111827 !important;
+        }
+
+        [x-show="open"] button:not(.text-red-500):not(.text-primary-500) *,
+        [x-show="open"] a:not(.text-red-500):not(.text-primary-500) * {
+            color: #111827 !important;
+        }
+
+        .dark [x-show="open"] button,
+        .dark [x-show="open"] a {
+            color: #ffffff !important;
+        }
+
+        .dark [x-show="open"] button:not(.text-red-500):not(.text-primary-500) *,
+        .dark [x-show="open"] a:not(.text-red-500):not(.text-primary-500) * {
+            color: #ffffff !important;
+        }
+
+        [x-show="open"] .text-red-500,
+        [x-show="open"] .text-red-500 * {
+            color: #ef4444 !important;
+        }
+
+        [x-show="open"] .text-primary-500,
+        [x-show="open"] .text-primary-500 * {
+            color: #2563eb !important;
+        }
+
+        /* Buttons and Interactive Elements */
+        .dark .dashboard-card span:not(.text-green-500):not(.text-red-500):not(.text-amber-500):not(.text-primary-500) {
+            color: #ffffff !important;
+        }
+
+        :not(.dark) .dashboard-card button,
+        :not(.dark) .dashboard-card a:not(.bg-primary-500) {
+            color: #111827 !important;
+        }
+
+        .dark .dashboard-card button,
+        .dark .dashboard-card a:not(.bg-primary-500) {
+            color: #ffffff !important;
+        }
+
+        :not(.dark) .dashboard-card button[class*="bg-white"] {
+            background-color: #f8fafc !important;
+        }
+
+        .dark .dashboard-card button[class*="bg-slate-900"],
+        .dark .dashboard-card button[class*="bg-gray-800"] {
+            background-color: #1e293b !important;
+        }
+
+        /* Calendar Styling */
+        .calendar-date {
+            background-color: #f1f5f9 !important;
+            color: #111827 !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        .dark .calendar-date {
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border: 1px solid #334155 !important;
+        }
+
+        .calendar-date.bg-primary-500,
+        .calendar-date[class*="bg-primary-"] {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+            border: none !important;
+        }
+
+        .calendar-day-header {
+            color: #64748b !important;
+        }
+
+        .dark .calendar-day-header {
+            color: #94a3b8 !important;
+        }
+
+        /* Export / Action Buttons */
+        button[class*="bg-white"][class*="dark:bg-gray-800"],
+        button[class*="bg-white"][class*="dark:bg-gray-800"] *,
+        a[class*="bg-white"][class*="dark:bg-gray-800"],
+        a[class*="bg-white"][class*="dark:bg-gray-800"] * {
+            color: #111827 !important;
+        }
+
+        .dark button[class*="bg-white"][class*="dark:bg-gray-800"],
+        .dark button[class*="bg-white"][class*="dark:bg-gray-800"] *,
+        .dark a[class*="bg-white"][class*="dark:bg-gray-800"],
+        .dark a[class*="bg-white"][class*="dark:bg-gray-800"] * {
+            color: #ffffff !important;
+        }
+
+        /* Dark Mode Unfold Backgrounds */
+        .dark .bg-white,
+        .dark .unfold-container,
+        .dark .unfold-main,
+        .dark #main,
+        .dark #page {
+            background-color: #0f172a !important;
+        }
+
+        .dark .unfold-navigation,
+        .dark #nav-sidebar {
+            background-color: #0f172a !important;
+            border-right-color: rgba(30, 41, 59, 1) !important;
+        }
+
+        .dark aside {
+            background-color: #0f172a !important;
+        }
+    </style>
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('h1').forEach(h1 => {
+                if (h1.classList.contains('no-brand-split')) return;
+                
+                let text = h1.innerText.trim();
+                let words = text.split(' ');
+                
+                if (words.length > 1) {
+                    let firstWord = words[0];
+                    let remainingWords = words.slice(1).join(' ');
+                    h1.innerHTML = `<span class="branded-first-word">${firstWord}</span> <span class="text-primary-500">${remainingWords}</span>`;
+                }
+            });
+        });
+    </script>
+{% endblock %}

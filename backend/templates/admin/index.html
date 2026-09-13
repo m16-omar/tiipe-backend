@@ -1,0 +1,520 @@
+{% extends "unfold/layouts/base.html" %}
+{% load i18n static %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Dashboard-specific overrides */
+    #content,
+    .content,
+    main.content {
+        max-width: none !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        background-color: #f8fafc !important;
+    }
+
+    .dark #content,
+    .dark .content,
+    .dark main.content {
+        background-color: #0f172a !important;
+    }
+
+    /* Robust Dashboard Layout */
+    .dashboard-grid {
+        display: grid !important;
+        grid-template-columns: repeat(1, 1fr) !important;
+        gap: 24px !important;
+        width: 100% !important;
+    }
+
+    @media (min-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    @media (min-width: 1280px) {
+        .dashboard-grid {
+            grid-template-columns: repeat(3, 1fr) !important;
+        }
+    }
+
+    .dashboard-card {
+        background-color: hsl(var(--dashboard-card)) !important;
+        border-radius: 28px !important;
+        padding: 36px !important;
+        box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.06), 0 10px 15px -6px rgba(0, 0, 0, 0.04) !important;
+        border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        min-height: 480px !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+
+    .dashboard-card:hover {
+        box-shadow: 0 25px 35px -5px rgba(37, 99, 235, 0.08), 0 10px 15px -6px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    .dark .dashboard-card {
+        border: 1px solid rgba(30, 41, 59, 1) !important;
+        box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Calendar Grid */
+    .calendar-grid {
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 12px !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+
+    .calendar-day-header {
+        font-size: 12px !important;
+        font-weight: 900 !important;
+        color: #94a3b8 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.15em !important;
+        padding-bottom: 16px !important;
+    }
+
+    .calendar-date {
+        font-size: 15px !important;
+        font-weight: 800 !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 14px !important;
+        transition: all 0.2s !important;
+        cursor: default;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w-full p-4 lg:p-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <h1 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight uppercase">
+                    Platform Intelligence
+                </h1>
+                <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mt-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Multi-Tenant Active</span>
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium tracking-tight">
+                Unified operations hub for The Impact Institute for Public Education (501c3) & Novatrix Services.
+            </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <button class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center gap-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Export Audit Report
+            </button>
+            <a href="{% url 'admin:tiipe_lms_program_add' %}" class="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center gap-2.5 shadow-xl shadow-primary-500/20 transition-all active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                New Program
+            </a>
+            <a href="{% url 'admin:novatrix_services_servicepillar_add' %}" class="bg-slate-900 dark:bg-slate-700 hover:bg-slate-800 text-white px-5 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center gap-2.5 shadow-lg transition-all active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add Service
+            </a>
+        </div>
+    </div>
+
+    <!-- Top Row: Charts & Stats -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Main Chart -->
+        <div class="lg:col-span-2 bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-7 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Gross Impact & Contribution Trend</h3>
+                    <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Monthly Philanthropic Inflow & Grant Allocation (USD)</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-black px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-primary-600 dark:text-primary-400 border border-blue-100 dark:border-blue-800/40">
+                        FY {{ current_year|default:"2026" }}
+                    </span>
+                </div>
+            </div>
+            <div class="h-[360px] w-full">
+                <canvas id="donationTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Vertical Stats -->
+        <div class="flex flex-col gap-6">
+            <!-- Stat Card 1: Gross 501(c)(3) Donations -->
+            <div class="bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm hover:border-primary-500/30 transition-all group cursor-pointer hover:shadow-lg hover:shadow-primary-500/5">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">
+                            Gross 501(c)(3) Donations
+                        </h3>
+                        <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">${{ total_donated }}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 border border-amber-100 dark:border-amber-700/30 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/30">
+                        {{ net_movement }}
+                    </span>
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">Net Growth Rate</span>
+                </div>
+            </div>
+
+            <!-- Stat Card 2: Verified Mentors & Educators -->
+            <div class="bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm hover:border-primary-500/30 transition-all group cursor-pointer hover:shadow-lg hover:shadow-primary-500/5">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-1">
+                            Verified Mentors & Educators
+                        </h3>
+                        <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{{ total_mentors }}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary-500 border border-blue-100 dark:border-blue-700/30 group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center gap-2">
+                    <span class="text-[10px] font-black px-2.5 py-0.5 rounded-lg bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-800/30">
+                        {{ total_users }} Total Users
+                    </span>
+                    <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">KYC Verified</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Middle Row: Grid Stats & High-Impact Banner -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Live Sessions -->
+        <div class="bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm hover:border-primary-500/20 transition-all">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h4 class="text-gray-400 dark:text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Tutoring Sessions
+                    </h4>
+                    <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{{ total_sessions }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-primary-500 border border-blue-100 dark:border-blue-800/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/>
+                        <rect x="2" y="6" width="14" height="12" rx="2"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-3">
+                <span class="text-[9px] font-black text-primary-500 bg-blue-50 dark:bg-blue-900/20 px-2.5 py-1 rounded-md uppercase tracking-widest">
+                    {{ total_programs }} Active Programs
+                </span>
+            </div>
+        </div>
+
+        <!-- Novatrix Pipeline -->
+        <div class="bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm hover:border-primary-500/20 transition-all">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h4 class="text-gray-400 dark:text-gray-500 text-[10px] font-black uppercase tracking-widest mb-1">
+                        Novatrix Pipeline
+                    </h4>
+                    <p class="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{{ total_inquiries }}</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 border border-purple-100 dark:border-purple-800/20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+                        <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="mt-3 flex items-center gap-1.5">
+                <span class="text-[9px] font-black text-purple-600 bg-purple-50 dark:bg-purple-900/20 px-2.5 py-1 rounded-md uppercase tracking-widest">
+                    {{ total_courses }} Tech Courses
+                </span>
+            </div>
+        </div>
+
+        <!-- High-Impact Live Classroom Action Card -->
+        <a href="{% url 'admin:tiipe_lms_mentorshipsession_changelist' %}" class="sm:col-span-2 bg-gradient-to-r from-blue-700 via-primary-600 to-indigo-800 rounded-3xl p-6 flex items-center justify-between relative overflow-hidden group cursor-pointer shadow-xl shadow-blue-600/20 active:scale-[0.98] transition-all">
+            <div class="relative z-10 text-white">
+                <p class="text-[10px] font-black uppercase tracking-widest opacity-80 mb-1">Classroom Engine</p>
+                <h3 class="text-2xl font-black uppercase tracking-tight">Launch Virtual Classroom</h3>
+                <p class="text-xs opacity-75 font-medium">Direct live session bridge for mentors, learners & educators.</p>
+            </div>
+            <div class="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-white group-hover:text-primary-600 transition-all border border-white/20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 10 4.553-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.447.894L15 14v-4z" />
+                    <rect width="13" height="12" x="2" y="6" rx="2" />
+                </svg>
+            </div>
+            <!-- Decorative circle -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
+        </a>
+    </div>
+
+    <!-- Bottom Row: Engagement Matrix -->
+    <h2 class="text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-6 px-1">
+        Engagement & Allocation Matrix
+    </h2>
+    <div class="dashboard-grid mb-16">
+        <!-- Widget 1: Interactive Academic Calendar -->
+        <div class="dashboard-card bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm min-h-[460px]">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">Academic Calendar</h3>
+                <span class="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                        <line x1="16" x2="16" y1="2" y2="6"/>
+                        <line x1="8" x2="8" y1="2" y2="6"/>
+                        <line x1="3" x2="21" y1="10" y2="10"/>
+                    </svg>
+                </span>
+            </div>
+            <div class="text-center mb-6">
+                <span class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">March 2026</span>
+            </div>
+            <div class="calendar-grid mb-3">
+                <span class="calendar-day-header">Sun</span>
+                <span class="calendar-day-header">Mon</span>
+                <span class="calendar-day-header">Tue</span>
+                <span class="calendar-day-header">Wed</span>
+                <span class="calendar-day-header">Thu</span>
+                <span class="calendar-day-header">Fri</span>
+                <span class="calendar-day-header">Sat</span>
+            </div>
+            <div class="calendar-grid">
+                <span class="calendar-date text-gray-300 dark:text-gray-700">1</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">2</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">3</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">4</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">5</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">6</span>
+                <span class="calendar-date text-gray-300 dark:text-gray-700">7</span>
+                <span class="calendar-date text-gray-900 dark:text-white">8</span>
+                <span class="calendar-date text-gray-900 dark:text-white">9</span>
+                <span class="calendar-date text-gray-900 dark:text-white border border-dashed border-primary-500 rounded-xl">10</span>
+                <span class="calendar-date text-gray-900 dark:text-white">11</span>
+                <span class="calendar-date text-gray-900 dark:text-white">12</span>
+                <span class="calendar-date text-white bg-primary-500 rounded-xl shadow-lg shadow-primary-500/30">13</span>
+                <span class="calendar-date text-gray-900 dark:text-white">14</span>
+                <span class="calendar-date text-gray-900 dark:text-white">15</span>
+                <span class="calendar-date text-gray-900 dark:text-white">16</span>
+                <span class="calendar-date text-gray-900 dark:text-white border border-amber-500 rounded-xl text-amber-500 font-black">17</span>
+                <span class="calendar-date text-gray-900 dark:text-white">18</span>
+                <span class="calendar-date text-gray-900 dark:text-white">19</span>
+                <span class="calendar-date text-gray-900 dark:text-white">20</span>
+                <span class="calendar-date text-gray-900 dark:text-white">21</span>
+                <span class="calendar-date text-gray-900 dark:text-white">22</span>
+                <span class="calendar-date text-gray-900 dark:text-white">23</span>
+                <span class="calendar-date text-white bg-primary-600 rounded-xl">24</span>
+                <span class="calendar-date text-gray-900 dark:text-white">25</span>
+                <span class="calendar-date text-gray-900 dark:text-white">26</span>
+                <span class="calendar-date text-gray-900 dark:text-white">27</span>
+                <span class="calendar-date text-gray-900 dark:text-white">28</span>
+                <span class="calendar-date text-gray-900 dark:text-white">29</span>
+                <span class="calendar-date text-gray-900 dark:text-white">30</span>
+                <span class="calendar-date text-gray-900 dark:text-white">31</span>
+            </div>
+        </div>
+
+        <!-- Widget 2: Global Impact & Tenant Nodes Map -->
+        <div class="dashboard-card bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-6 shadow-sm min-h-[460px]">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">Impact & Tenant Nodes</h3>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Active Multi-Tenant Footprint</p>
+                </div>
+                <span class="px-2.5 py-1 rounded-lg bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase">
+                    {{ active_tenants }} Schemas
+                </span>
+            </div>
+            <div class="relative w-full h-[330px] bg-slate-900 dark:bg-black/60 rounded-3xl overflow-hidden border border-slate-800 shadow-inner group-hover:border-primary-500/30 transition-all">
+                <!-- Map Grid Pattern -->
+                <div class="absolute inset-0 opacity-[0.08]"
+                    style="background-image: radial-gradient(#60a5fa 1px, transparent 1px); background-size: 20px 20px;">
+                </div>
+
+                <svg viewBox="0 0 100 80" class="w-full h-full relative z-10 p-4">
+                    <!-- Lines connecting nodes -->
+                    <line x1="25" y1="35" x2="48" y2="30" stroke="#3b82f6" stroke-width="0.5" stroke-dasharray="2" opacity="0.4"/>
+                    <line x1="48" y1="30" x2="70" y2="42" stroke="#3b82f6" stroke-width="0.5" stroke-dasharray="2" opacity="0.4"/>
+                    <line x1="48" y1="30" x2="55" y2="55" stroke="#f59e0b" stroke-width="0.5" stroke-dasharray="2" opacity="0.4"/>
+                    <line x1="25" y1="35" x2="35" y2="60" stroke="#3b82f6" stroke-width="0.5" stroke-dasharray="2" opacity="0.4"/>
+
+                    <!-- TIIPE HQ Node (North America) -->
+                    <circle cx="25" cy="35" r="2.5" fill="#3b82f6" class="drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                    <circle cx="25" cy="35" r="5" fill="none" stroke="#3b82f6" stroke-width="0.5" opacity="0.5" />
+
+                    <!-- Novatrix Europe / West Africa Hub -->
+                    <circle cx="48" cy="30" r="3" fill="#2563eb" class="drop-shadow-[0_0_12px_rgba(37,99,235,0.9)]" />
+                    <circle cx="48" cy="30" r="6" fill="none" stroke="#60a5fa" stroke-width="0.6" opacity="0.4" />
+
+                    <!-- African Public Health Outposts -->
+                    <circle cx="55" cy="55" r="2.5" fill="#f59e0b" class="drop-shadow-[0_0_10px_rgba(245,158,11,0.8)]" />
+                    <circle cx="55" cy="55" r="5" fill="none" stroke="#f59e0b" stroke-width="0.5" opacity="0.4" />
+
+                    <!-- LatAm Research Hub -->
+                    <circle cx="35" cy="60" r="2" fill="#10b981" class="drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                    <circle cx="35" cy="60" r="4" fill="none" stroke="#10b981" stroke-width="0.5" opacity="0.4" />
+
+                    <!-- Asia Partner Network -->
+                    <circle cx="75" cy="40" r="2.5" fill="#8b5cf6" class="drop-shadow-[0_0_10px_rgba(139,92,246,0.8)]" />
+                    <circle cx="75" cy="40" r="5" fill="none" stroke="#8b5cf6" stroke-width="0.5" opacity="0.4" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Widget 3: Program & Fund Split (Doughnut Chart) -->
+        <div class="dashboard-card bg-[hsl(var(--dashboard-card))] border border-gray-100 dark:border-gray-800 rounded-3xl p-7 shadow-sm min-h-[460px]">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-sm font-black uppercase tracking-tight text-gray-900 dark:text-white">Program & Fund Split</h3>
+                    <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Capital & Impact Allocation</p>
+                </div>
+            </div>
+
+            <div class="h-[220px] mx-auto w-[220px] mb-6 relative">
+                <canvas id="programSplitChart"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span class="text-[10px] font-black uppercase text-gray-400 opacity-60">Capital Inflow</span>
+                    <span class="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">{{ program_split.total_count }}</span>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="w-3 h-3 rounded-full bg-[#2563eb]"></span>
+                    <span class="text-gray-900 dark:text-white flex-1 font-black uppercase tracking-widest text-[10px]">Education & LMS</span>
+                    <span class="text-[10px] font-black text-primary-500">{{ program_split.education_pct }}%</span>
+                    <span class="text-[10px] font-black text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-700">${{ program_split.education_count|floatformat:"0" }}</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="w-3 h-3 rounded-full bg-[#10b981]"></span>
+                    <span class="text-gray-900 dark:text-white flex-1 font-black uppercase tracking-widest text-[10px]">Public Health</span>
+                    <span class="text-[10px] font-black text-emerald-500">{{ program_split.health_pct }}%</span>
+                    <span class="text-[10px] font-black text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-700">${{ program_split.health_count|floatformat:"0" }}</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="w-3 h-3 rounded-full bg-[#f59e0b]"></span>
+                    <span class="text-gray-900 dark:text-white flex-1 font-black uppercase tracking-widest text-[10px]">Civic & Research</span>
+                    <span class="text-[10px] font-black text-amber-500">{{ program_split.civic_pct }}%</span>
+                    <span class="text-[10px] font-black text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-700">${{ program_split.civic_count|floatformat:"0" }}</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <span class="w-3 h-3 rounded-full bg-[#6366f1]"></span>
+                    <span class="text-gray-900 dark:text-white flex-1 font-black uppercase tracking-widest text-[10px]">Novatrix Tech Grants</span>
+                    <span class="text-[10px] font-black text-indigo-500">{{ program_split.tech_pct }}%</span>
+                    <span class="text-[10px] font-black text-gray-500 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 px-2.5 py-0.5 rounded-lg border border-gray-100 dark:border-gray-700">${{ program_split.tech_count|floatformat:"0" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Donation Trend Chart
+    const ctx = document.getElementById('donationTrendChart').getContext('2d');
+    const isDark = document.documentElement.classList.contains('dark');
+    const primaryColor = '#2563eb';
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                label: 'Donations & Inflow',
+                data: {{ trend_data|safe }},
+                borderColor: primaryColor,
+                backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 3,
+                pointBackgroundColor: primaryColor,
+                borderWidth: 3,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return ' Inflow: $' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: isDark ? '#94a3b8' : '#64748b' }
+                },
+                y: {
+                    grid: { color: isDark ? 'rgba(255,255,255,0.05)' : '#f1f5f9' },
+                    ticks: { 
+                        color: isDark ? '#94a3b8' : '#64748b',
+                        callback: function(value) {
+                            return '$' + (value >= 1000 ? (value/1000) + 'k' : value);
+                        }
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Program Split Chart
+    const ctx2 = document.getElementById('programSplitChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: ['Education & LMS', 'Public Health', 'Civic & Research', 'Novatrix Tech Grants'],
+            datasets: [{
+                data: [
+                    {{ program_split.education_count }},
+                    {{ program_split.health_count }},
+                    {{ program_split.civic_count }},
+                    {{ program_split.tech_count }}
+                ],
+                backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#6366f1'],
+                borderWidth: 0,
+                spacing: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            cutout: '72%'
+        }
+    });
+</script>
+{% endblock %}
