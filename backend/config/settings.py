@@ -378,7 +378,7 @@ JAZZMIN_UI_TWEAKS = {
 CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=False, cast=bool)
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://localhost:5173,http://localhost:8080,https://impactinstituteglobal.org,https://www.impactinstituteglobal.org,https://thenovatrix.com,https://www.thenovatrix.com',
+    default='http://localhost:3000,http://localhost:5173,http://localhost:5174,http://localhost:5175,http://localhost:4173,http://localhost:8080,https://impactinstituteglobal.org,https://www.impactinstituteglobal.org,https://thenovatrix.com,https://www.thenovatrix.com',
     cast=Csv()
 )
 CORS_ALLOW_CREDENTIALS = True
