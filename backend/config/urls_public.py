@@ -3,13 +3,12 @@ from django.urls import path, include
 from django.http import JsonResponse
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-from django.shortcuts import render
+from django.shortcuts import redirect
 
 def api_root_view(request):
-    # Render rich interactive dashboard for browser visitors
     accept = request.META.get('HTTP_ACCEPT', '')
     if 'text/html' in accept or '*/*' in accept:
-        return render(request, 'dashboard.html')
+        return redirect('/admin/')
 
     return JsonResponse({
         'service': 'TIIPE & Novatrix Unified Multi-Tenant Backend Gateway',
